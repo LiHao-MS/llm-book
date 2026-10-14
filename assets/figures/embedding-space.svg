@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">低秩子空间与 Embedding 几何</title>
+  <desc id="desc">左侧展示数据点向低秩主轴投影，右侧展示 Embedding 的近邻和局部方向关系，并注明这些关系不保证普遍成立。</desc>
+  <defs>
+    <marker id="blue-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1F648C"/>
+    </marker>
+    <marker id="orange-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#B55224"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="650" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="46" text-anchor="middle" font-size="30" font-weight="700">低秩子空间与 Embedding 几何</text>
+
+    <rect x="35" y="80" width="545" height="515" rx="14" fill="#F5F8FA" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="308" y="125" text-anchor="middle" font-size="23" font-weight="700">低秩子空间：保留主要方向</text>
+    <line x1="100" y1="450" x2="510" y2="245" stroke="#1F648C" stroke-width="4" marker-end="url(#blue-arrow)"/>
+    <text x="405" y="205" font-size="22" font-weight="700" fill="#1F648C">span{u₁}</text>
+
+    <g stroke="#8A9AA5" stroke-width="2" stroke-dasharray="6 6">
+      <line x1="180" y1="460" x2="160" y2="420"/>
+      <line x1="200" y1="350" x2="220" y2="390"/>
+      <line x1="300" y1="400" x2="280" y2="360"/>
+      <line x1="320" y1="290" x2="340" y2="330"/>
+      <line x1="420" y1="340" x2="400" y2="300"/>
+      <line x1="440" y1="230" x2="460" y2="270"/>
+    </g>
+    <g fill="#B55224" stroke="#FFFFFF" stroke-width="2">
+      <circle cx="180" cy="460" r="7"/>
+      <circle cx="200" cy="350" r="7"/>
+      <circle cx="300" cy="400" r="7"/>
+      <circle cx="320" cy="290" r="7"/>
+      <circle cx="420" cy="340" r="7"/>
+      <circle cx="440" cy="230" r="7"/>
+    </g>
+    <g fill="#FFFFFF" stroke="#39704A" stroke-width="3">
+      <circle cx="160" cy="420" r="6"/>
+      <circle cx="220" cy="390" r="6"/>
+      <circle cx="280" cy="360" r="6"/>
+      <circle cx="340" cy="330" r="6"/>
+      <circle cx="400" cy="300" r="6"/>
+      <circle cx="460" cy="270" r="6"/>
+    </g>
+    <text x="90" y="185" font-size="19" fill="#8C421F">● 原数据点</text>
+    <text x="235" y="185" font-size="19" fill="#39704A">○ 低秩投影</text>
+    <rect x="75" y="500" width="465" height="66" rx="8" fill="#FFFFFF" stroke="#C4CDD2"/>
+    <text x="308" y="529" text-anchor="middle" font-size="22">X ≈ X_k = U_k Σ_k V_kᵀ</text>
+    <text x="308" y="555" text-anchor="middle" font-size="18" fill="#4C5F6A">虚线表示被截断近似舍弃的残差</text>
+
+    <rect x="620" y="80" width="545" height="515" rx="14" fill="#FBF8F3" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="893" y="125" text-anchor="middle" font-size="23" font-weight="700">Embedding：近邻与方向（示意）</text>
+    <line x1="680" y1="465" x2="1100" y2="465" stroke="#C4CDD2" stroke-width="1.5"/>
+    <line x1="680" y1="165" x2="680" y2="465" stroke="#C4CDD2" stroke-width="1.5"/>
+
+    <g fill="#1F648C" stroke="#FFFFFF" stroke-width="2">
+      <circle cx="755" cy="245" r="8"/>
+      <circle cx="835" cy="275" r="8"/>
+      <circle cx="780" cy="340" r="8"/>
+    </g>
+    <text x="735" y="225" font-size="21" fill="#1F648C">猫</text>
+    <text x="848" y="280" font-size="21" fill="#1F648C">狗</text>
+    <text x="740" y="368" font-size="21" fill="#1F648C">老虎</text>
+    <text x="700" y="405" font-size="18" fill="#4C5F6A">近邻反映学习到的统计结构</text>
+
+    <g fill="#B55224" stroke="#FFFFFF" stroke-width="2">
+      <circle cx="985" cy="225" r="8"/>
+      <circle cx="1060" cy="280" r="8"/>
+      <circle cx="990" cy="345" r="8"/>
+    </g>
+    <text x="952" y="205" font-size="21" fill="#8C421F">汽车</text>
+    <text x="1072" y="286" font-size="21" fill="#8C421F">卡车</text>
+    <text x="1002" y="370" font-size="21" fill="#8C421F">公交车</text>
+
+    <text x="710" y="510" font-size="20">走</text>
+    <line x1="745" y1="503" x2="815" y2="503" stroke="#B55224" stroke-width="2.5" marker-end="url(#orange-arrow)"/>
+    <text x="830" y="510" font-size="20">走过</text>
+    <text x="710" y="552" font-size="20">看</text>
+    <line x1="745" y1="545" x2="815" y2="545" stroke="#B55224" stroke-width="2.5" marker-end="url(#orange-arrow)"/>
+    <text x="830" y="552" font-size="20">看过</text>
+    <text x="925" y="510" font-size="18" fill="#4C5F6A">局部方向关系</text>
+    <text x="925" y="540" font-size="18" fill="#4C5F6A">不保证普遍成立</text>
+
+    <text x="600" y="630" text-anchor="middle" font-size="20" fill="#4C5F6A">位置、近邻与方向来自学习到的表示，不直接构成概率或逻辑公理</text>
+  </g>
+</svg>

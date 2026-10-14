@@ -186,3 +186,143 @@ llm-decoding-explorer {
     grid-template-columns: 1fr;
   }
 }
+
+llm-vector-projector,
+llm-matrix-transformer {
+  display: block;
+}
+
+.interactive-select-control {
+  grid-template-columns: minmax(7rem, auto) minmax(8rem, 1fr);
+}
+
+.interactive-select-control select {
+  inline-size: 100%;
+  min-block-size: 2.5rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #8b969c;
+  border-radius: 0.25rem;
+  background: #ffffff;
+  color: #172b3a;
+  font: inherit;
+}
+
+.interactive-select-control select:focus-visible {
+  outline: 3px solid #8c421f;
+  outline-offset: 3px;
+}
+
+.vector-unit-circle {
+  fill: none;
+  stroke: #dde3e7;
+  stroke-dasharray: 5 4;
+}
+
+.vector-a-line,
+.vector-b-line,
+.vector-projection-line,
+.vector-residual-line {
+  stroke-linecap: round;
+}
+
+.vector-a-line {
+  stroke: #1f648c;
+  stroke-width: 3;
+}
+
+.vector-b-line {
+  stroke: #2f6f4f;
+  stroke-width: 3;
+}
+
+.vector-projection-line {
+  stroke: #c65d21;
+  stroke-width: 5;
+}
+
+.vector-residual-line {
+  stroke: #8c421f;
+  stroke-dasharray: 7 5;
+  stroke-width: 2;
+}
+
+.vector-a-point {
+  fill: #1f648c;
+}
+
+.vector-b-point {
+  fill: #2f6f4f;
+}
+
+.vector-projection-point {
+  fill: #c65d21;
+}
+
+.matrix-grid {
+  fill: none;
+  stroke-width: 1;
+}
+
+.matrix-original-grid {
+  stroke: #dde3e7;
+}
+
+.matrix-transformed-grid {
+  stroke: #8eb3c4;
+}
+
+.matrix-original-square {
+  fill: #dde3e7;
+  fill-opacity: 0.35;
+  stroke: #5e6a70;
+  stroke-width: 1.5;
+}
+
+.matrix-transformed-square {
+  fill: #c65d21;
+  fill-opacity: 0.18;
+  stroke: #c65d21;
+  stroke-width: 2;
+}
+
+.matrix-original-basis {
+  stroke: #5e6a70;
+  stroke-dasharray: 5 4;
+  stroke-width: 2;
+}
+
+.matrix-first-basis-image,
+.matrix-second-basis-image {
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.matrix-first-basis-image {
+  stroke: #1f648c;
+}
+
+.matrix-second-basis-image {
+  stroke: #b55224;
+}
+
+.matrix-original-point {
+  fill: #5e6a70;
+}
+
+.matrix-transformed-point {
+  fill: #c65d21;
+}
+
+.csl-entry {
+  overflow-wrap: anywhere;
+}
+
+.references a {
+  text-decoration: underline;
+}
+
+@media (max-width: 36rem) {
+  .interactive-select-control {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

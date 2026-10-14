@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">向量投影：正交分解</title>
+  <desc id="desc">向量 a 在向量 b 上的正交投影，系数分母是 b 点乘 b，残差与 b 垂直。</desc>
+  <defs>
+    <marker id="axis-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#172B3A"/>
+    </marker>
+    <marker id="blue-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1F648C"/>
+    </marker>
+    <marker id="orange-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#B55224"/>
+    </marker>
+    <marker id="green-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#39704A"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="620" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="48" text-anchor="middle" font-size="30" font-weight="700">向量投影：正交分解</text>
+
+    <g stroke="#E0E5E8" stroke-width="1">
+      <line x1="130" y1="380" x2="575" y2="380"/>
+      <line x1="130" y1="300" x2="575" y2="300"/>
+      <line x1="130" y1="220" x2="575" y2="220"/>
+      <line x1="130" y1="140" x2="575" y2="140"/>
+      <line x1="230" y1="120" x2="230" y2="460"/>
+      <line x1="330" y1="120" x2="330" y2="460"/>
+      <line x1="430" y1="120" x2="430" y2="460"/>
+      <line x1="530" y1="120" x2="530" y2="460"/>
+    </g>
+    <line x1="130" y1="460" x2="580" y2="460" stroke="#172B3A" stroke-width="2" marker-end="url(#axis-arrow)"/>
+    <line x1="130" y1="460" x2="130" y2="110" stroke="#172B3A" stroke-width="2" marker-end="url(#axis-arrow)"/>
+    <g font-size="17" text-anchor="middle" fill="#4C5F6A">
+      <text x="230" y="485">1</text>
+      <text x="330" y="485">2</text>
+      <text x="430" y="485">3</text>
+      <text x="530" y="485">4</text>
+      <text x="112" y="386">1</text>
+      <text x="112" y="306">2</text>
+      <text x="112" y="226">3</text>
+      <text x="112" y="146">4</text>
+    </g>
+
+    <line x1="130" y1="460" x2="530" y2="460" stroke="#1F648C" stroke-width="4" marker-end="url(#blue-arrow)"/>
+    <line x1="130" y1="460" x2="430" y2="460" stroke="#39704A" stroke-width="7" marker-end="url(#green-arrow)"/>
+    <line x1="130" y1="460" x2="430" y2="300" stroke="#B55224" stroke-width="4" marker-end="url(#orange-arrow)"/>
+    <line x1="430" y1="300" x2="430" y2="460" stroke="#71558A" stroke-width="3" stroke-dasharray="8 7"/>
+    <path d="M 430 440 L 410 440 L 410 460" fill="none" stroke="#71558A" stroke-width="2.5"/>
+    <circle cx="130" cy="460" r="5" fill="#172B3A"/>
+    <circle cx="430" cy="300" r="5" fill="#B55224"/>
+    <circle cx="430" cy="460" r="5" fill="#39704A"/>
+
+    <text x="455" y="286" font-size="23" font-weight="700" fill="#8C421F">a = (3, 2)</text>
+    <text x="465" y="520" font-size="23" font-weight="700" fill="#1F648C">b = (4, 0)</text>
+    <text x="270" y="438" text-anchor="middle" font-size="21" font-weight="700" fill="#39704A">proj_b(a) = (3, 0)</text>
+    <rect x="446" y="346" width="165" height="64" rx="7" fill="#FFFFFF" stroke="#C4CDD2"/>
+    <text x="458" y="372" font-size="19" fill="#5C4770">r = a − proj_b(a)</text>
+    <text x="458" y="398" font-size="19" fill="#5C4770">r·b = 0</text>
+    <text x="130" y="560" font-size="21">a = proj_b(a) + r，且 r 与 b 正交</text>
+
+    <rect x="650" y="105" width="500" height="410" rx="14" fill="#F6F4EF" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="900" y="155" text-anchor="middle" font-size="25" font-weight="700">分母是 b·b = ‖b‖²</text>
+    <text x="900" y="207" text-anchor="middle" font-size="25">proj_b(a) = ((a·b)/(b·b)) b</text>
+    <line x1="705" y1="235" x2="1095" y2="235" stroke="#C4CDD2" stroke-width="2"/>
+    <text x="730" y="285" font-size="23">a·b = 3×4 + 2×0 = 12</text>
+    <text x="730" y="333" font-size="23">b·b = 4×4 + 0×0 = 16</text>
+    <text x="730" y="390" font-size="24">proj_b(a) = (12/16) b</text>
+    <text x="730" y="438" font-size="24">= (3/4)(4, 0) = (3, 0)</text>
+    <text x="900" y="486" text-anchor="middle" font-size="19" fill="#4C5F6A">系数没有量纲混淆：b·b = ‖b‖²</text>
+  </g>
+</svg>

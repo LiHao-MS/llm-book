@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 650" role="img" aria-labelledby="title desc">
+  <title id="title">矩阵变换：单位方块的像</title>
+  <desc id="desc">剪切矩阵把单位网格变为斜网格，矩阵第一列和第二列分别是 e1 和 e2 的像。</desc>
+  <defs>
+    <marker id="axis-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#172B3A"/>
+    </marker>
+    <marker id="blue-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1F648C"/>
+    </marker>
+    <marker id="orange-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#B55224"/>
+    </marker>
+  </defs>
+  <rect width="1300" height="650" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="650" y="46" text-anchor="middle" font-size="30" font-weight="700">矩阵变换：单位方块的像</text>
+    <text x="250" y="98" text-anchor="middle" font-size="23" font-weight="700">原单位网格</text>
+    <text x="960" y="98" text-anchor="middle" font-size="23" font-weight="700">A 作用后的网格</text>
+
+    <g stroke="#DDE3E7" stroke-width="1.2">
+      <line x1="100" y1="500" x2="380" y2="500"/>
+      <line x1="100" y1="430" x2="380" y2="430"/>
+      <line x1="100" y1="360" x2="380" y2="360"/>
+      <line x1="100" y1="290" x2="380" y2="290"/>
+      <line x1="100" y1="220" x2="380" y2="220"/>
+      <line x1="100" y1="500" x2="100" y2="220"/>
+      <line x1="170" y1="500" x2="170" y2="220"/>
+      <line x1="240" y1="500" x2="240" y2="220"/>
+      <line x1="310" y1="500" x2="310" y2="220"/>
+      <line x1="380" y1="500" x2="380" y2="220"/>
+    </g>
+    <line x1="100" y1="500" x2="415" y2="500" stroke="#172B3A" stroke-width="2" marker-end="url(#axis-arrow)"/>
+    <line x1="100" y1="500" x2="100" y2="185" stroke="#172B3A" stroke-width="2" marker-end="url(#axis-arrow)"/>
+    <polygon points="100,500 170,500 170,430 100,430" fill="#DCECF3" stroke="#1F648C" stroke-width="3"/>
+    <line x1="100" y1="500" x2="170" y2="500" stroke="#1F648C" stroke-width="4" marker-end="url(#blue-arrow)"/>
+    <line x1="100" y1="500" x2="100" y2="430" stroke="#B55224" stroke-width="4" marker-end="url(#orange-arrow)"/>
+    <text x="182" y="525" font-size="22" fill="#1F648C">e₁ = (1, 0)</text>
+    <text x="114" y="420" font-size="22" fill="#8C421F">e₂ = (0, 1)</text>
+    <text x="205" y="455" font-size="19" fill="#4C5F6A">单位方块</text>
+
+    <rect x="460" y="190" width="175" height="215" rx="12" fill="#F6F4EF" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="548" y="240" text-anchor="middle" font-size="25" font-weight="700">A = [1  1]</text>
+    <text x="568" y="278" text-anchor="middle" font-size="25" font-weight="700">[0  1]</text>
+    <text x="548" y="332" text-anchor="middle" font-size="20">Ae₁ = (1, 0)</text>
+    <text x="548" y="370" text-anchor="middle" font-size="20">Ae₂ = (1, 1)</text>
+
+    <g stroke="#DDE3E7" stroke-width="1.2">
+      <line x1="680" y1="500" x2="960" y2="500"/>
+      <line x1="750" y1="430" x2="1030" y2="430"/>
+      <line x1="820" y1="360" x2="1100" y2="360"/>
+      <line x1="890" y1="290" x2="1170" y2="290"/>
+      <line x1="960" y1="220" x2="1240" y2="220"/>
+      <line x1="680" y1="500" x2="960" y2="220"/>
+      <line x1="750" y1="500" x2="1030" y2="220"/>
+      <line x1="820" y1="500" x2="1100" y2="220"/>
+      <line x1="890" y1="500" x2="1170" y2="220"/>
+      <line x1="960" y1="500" x2="1240" y2="220"/>
+    </g>
+    <line x1="680" y1="500" x2="1000" y2="500" stroke="#172B3A" stroke-width="2" marker-end="url(#axis-arrow)"/>
+    <line x1="680" y1="500" x2="680" y2="185" stroke="#172B3A" stroke-width="2" marker-end="url(#axis-arrow)"/>
+    <polygon points="680,500 750,500 820,430 750,430" fill="#FFF0E5" stroke="#B55224" stroke-width="3"/>
+    <line x1="680" y1="500" x2="750" y2="500" stroke="#1F648C" stroke-width="4" marker-end="url(#blue-arrow)"/>
+    <line x1="680" y1="500" x2="750" y2="430" stroke="#B55224" stroke-width="4" marker-end="url(#orange-arrow)"/>
+    <text x="765" y="525" font-size="22" fill="#1F648C">Ae₁ = 第一列</text>
+    <text x="775" y="414" font-size="22" fill="#8C421F">Ae₂ = 第二列</text>
+    <text x="865" y="470" font-size="19" fill="#4C5F6A">单位方块的像</text>
+
+    <rect x="230" y="565" width="840" height="55" rx="9" fill="#EDF4F7" stroke="#8A9AA5"/>
+    <text x="650" y="601" text-anchor="middle" font-size="24" font-weight="700">列向量是基向量的像：Ax = x₁Ae₁ + x₂Ae₂</text>
+  </g>
+</svg>
