@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 440" role="img" aria-labelledby="title desc">
+  <title id="title">从上下文到下一 Token 分布</title>
+  <desc id="desc">上下文经过语言模型产生 Logits，再经 Softmax 得到归一化的下一 Token 概率分布。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#365E73"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="440" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="48" text-anchor="middle" font-size="30" font-weight="700">从上下文到下一 Token 分布</text>
+
+    <rect x="35" y="105" width="240" height="220" rx="14" fill="#F6F4EF" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="155" y="145" text-anchor="middle" font-size="23" font-weight="700">上下文</text>
+    <rect x="60" y="172" width="190" height="55" rx="8" fill="#FFFFFF" stroke="#C4CDD2"/>
+    <text x="155" y="207" text-anchor="middle" font-size="22">“今天的天气很”</text>
+    <text x="155" y="272" text-anchor="middle" font-size="22">Token 序列 x≤t</text>
+
+    <line x1="282" y1="215" x2="323" y2="215" stroke="#365E73" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="335" y="105" width="240" height="220" rx="14" fill="#EDF4F7" stroke="#668698" stroke-width="2"/>
+    <text x="455" y="145" text-anchor="middle" font-size="23" font-weight="700">语言模型</text>
+    <text x="455" y="202" text-anchor="middle" font-size="24">z = fθ(x≤t)</text>
+    <text x="455" y="254" text-anchor="middle" font-size="22">Logits z ∈ ℝⱽ</text>
+    <text x="455" y="291" text-anchor="middle" font-size="18" fill="#4C5F6A">每个候选一个实数分数</text>
+
+    <line x1="582" y1="215" x2="623" y2="215" stroke="#365E73" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="635" y="105" width="190" height="220" rx="14" fill="#FFF4E9" stroke="#B9825B" stroke-width="2"/>
+    <text x="730" y="145" text-anchor="middle" font-size="23" font-weight="700">稳定 Softmax</text>
+    <text x="730" y="207" text-anchor="middle" font-size="23">p = softmax(z)</text>
+    <text x="730" y="258" text-anchor="middle" font-size="23">Σᵢ pᵢ = 1</text>
+
+    <line x1="832" y1="215" x2="873" y2="215" stroke="#365E73" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="885" y="105" width="280" height="220" rx="14" fill="#F4F7F2" stroke="#748B68" stroke-width="2"/>
+    <text x="1025" y="145" text-anchor="middle" font-size="23" font-weight="700">下一 Token 分布（示意）</text>
+    <text x="910" y="184" font-size="20">好</text>
+    <rect x="970" y="165" width="99" height="22" rx="4" fill="#2F6F8F"/>
+    <text x="1145" y="184" text-anchor="end" font-size="19">0.55</text>
+    <text x="910" y="232" font-size="20">不错</text>
+    <rect x="970" y="213" width="54" height="22" rx="4" fill="#5B8FA8"/>
+    <text x="1145" y="232" text-anchor="end" font-size="19">0.30</text>
+    <text x="910" y="280" font-size="20">糟糕</text>
+    <rect x="970" y="261" width="27" height="22" rx="4" fill="#C66A3D"/>
+    <text x="1145" y="280" text-anchor="end" font-size="19">0.15</text>
+
+    <rect x="210" y="360" width="780" height="52" rx="10" fill="#FFFFFF" stroke="#B5C0C7"/>
+    <text x="600" y="394" text-anchor="middle" font-size="24">pθ(xₜ₊₁ = i | x≤t) = softmax(z)ᵢ，i = 1, …, V</text>
+  </g>
+</svg>

@@ -1,0 +1,188 @@
+/*-- scss:defaults --*/
+$web-font-path: false;
+$line-height-base: 1.75;
+$headings-font-weight: 600;
+$code-font-size: 0.875em;
+$link-decoration: none;
+$link-hover-decoration: underline;
+
+/*-- scss:rules --*/
+.content {
+  max-width: 48rem;
+}
+
+.content p a {
+  text-decoration: underline;
+}
+
+.sourceCode .bu {
+  color: #3f5f00;
+}
+
+.sourceCode pre,
+.sourceCode code,
+.sourceCode code span {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+mjx-container[display='true'] {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+llm-cross-entropy,
+llm-decoding-explorer {
+  display: block;
+}
+
+.interactive-mount {
+  margin: 1.5rem 0;
+}
+
+.interactive-widget {
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid #c4cdd2;
+  border-radius: 0.5rem;
+  background: #f7f9fa;
+}
+
+.interactive-controls {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.interactive-control {
+  display: grid;
+  grid-template-columns: minmax(7rem, auto) minmax(8rem, 1fr) 4rem;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.interactive-control label {
+  font-weight: 600;
+}
+
+.interactive-control input[type='range'] {
+  inline-size: 100%;
+  min-block-size: 2rem;
+  accent-color: #1f648c;
+}
+
+.interactive-control input[type='range']:focus-visible {
+  outline: 3px solid #8c421f;
+  outline-offset: 3px;
+}
+
+.interactive-control output,
+.interactive-results output,
+.decoding-summary output {
+  font-variant-numeric: tabular-nums;
+}
+
+.interactive-results {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.interactive-results div {
+  padding: 0.5rem 0.75rem;
+  background: #ffffff;
+  border-radius: 0.25rem;
+}
+
+.interactive-results dt {
+  font-weight: 600;
+}
+
+.interactive-results dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.decoding-summary {
+  margin: 1rem 0 0;
+  font-weight: 600;
+}
+
+.interactive-chart {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  margin-top: 1rem;
+  background: #ffffff;
+}
+
+.interactive-chart text {
+  fill: #172b3a;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.chart-axes {
+  fill: none;
+  stroke: #5e6a70;
+  stroke-width: 1.5;
+}
+
+.chart-label {
+  font-size: 12px;
+}
+
+.cross-entropy-curve {
+  fill: none;
+  stroke: #1f648c;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+.cross-entropy-point {
+  fill: #c65d21;
+}
+
+.cross-entropy-point-label {
+  fill: #8c421f;
+  font-weight: 600;
+}
+
+.decoding-bar-track {
+  fill: #dde3e7;
+}
+
+.decoding-bar {
+  fill: #2f6f8f;
+}
+
+.decoding-token.is-excluded .decoding-bar-track {
+  fill: #eef1f2;
+  stroke: #8b969c;
+  stroke-dasharray: 5 4;
+}
+
+.decoding-token.is-excluded text {
+  fill: #4c5f6a;
+}
+
+.interactive-widget figcaption {
+  margin-top: 0.75rem;
+  color: #4c5f6a;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 36rem) {
+  .interactive-control {
+    grid-template-columns: minmax(0, 1fr) 3.5rem;
+  }
+
+  .interactive-control label {
+    grid-column: 1 / -1;
+  }
+
+  .interactive-results {
+    grid-template-columns: 1fr;
+  }
+}

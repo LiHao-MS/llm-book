@@ -1,0 +1,43 @@
+project:
+  type: book
+  output-dir: _book
+  resources:
+    - assets/**
+    - examples/**
+
+book:
+  title: "理解大语言模型：从数学基础到强化学习与 Scaling"
+  # orange-book 将缺省作者视为数组；空白字符串表示暂不署名。
+  author: " "
+  output-file: llm-book
+  downloads: [pdf]
+  search: true
+  chapters:
+    - index.qmd
+    - softmax-cross-entropy.qmd
+
+lang: zh-CN
+bibliography: references.bib
+language: _language-zh-CN.yml
+
+format:
+  html:
+    theme:
+      - cosmo
+      - styles/site.scss
+    toc: true
+    code-copy: true
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js"
+  typst:
+    toc: true
+    number-sections: true
+    mainfont: "Noto Serif CJK SC"
+    supplement-chapter: "章节"
+    template-partials:
+      - styles/typst-show.typ
+    # orange-book 不读取 mainfont；在封面和正文统一应用中文字体。
+    include-in-header:
+      - text: |
+          #set text(font: "Noto Serif CJK SC")

@@ -1,0 +1,18 @@
+{
+  "name": "llm-book",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "quarto render",
+    "test": "npm run test:js && npm run test:python",
+    "test:js": "node --test tests/unit/*.test.mjs",
+    "test:python": "python3 -m unittest discover -s tests -p 'test_*.py'",
+    "test:artifacts": "node --test tests/artifacts/artifacts.test.mjs",
+    "test:e2e": "playwright test",
+    "verify": "npm run build && npm run test:js && npm run test:python && npm run test:artifacts && npm run test:e2e"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.64.0"
+  }
+}

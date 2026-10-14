@@ -1,0 +1,13 @@
+_book/
+.quarto/
+_freeze/
+node_modules/
+coverage/
+test-results/
+playwright-report/
+__pycache__/
+*.py[cod]
+.DS_Store
+
+/.quarto/
+**/*.quarto_ipynb
