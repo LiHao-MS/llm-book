@@ -29,7 +29,7 @@ format:
     code-copy: true
     html-math-method:
       method: mathjax
-      url: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js"
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js"
   typst:
     toc: true
     number-sections: true

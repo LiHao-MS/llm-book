@@ -67,7 +67,7 @@ test('核心公式在拒绝所有跨源请求时仍由本地资源完整渲染',
   await openPage(page, chapterPath);
   expect(offOriginRequests, `发现跨源运行时请求：${offOriginRequests.join(', ')}`).toEqual([]);
 
-  const formulas = page.locator('mjx-container[jax="CHTML"]');
+  const formulas = page.locator('mjx-container[jax="SVG"]');
   await expect(formulas.first()).toBeVisible();
   expect(await formulas.count()).toBeGreaterThan(10);
   const dimensions = await formulas.first().evaluate((element) => {
@@ -76,6 +76,24 @@ test('核心公式在拒绝所有跨源请求时仍由本地资源完整渲染',
   });
   expect(dimensions.width).toBeGreaterThan(0);
   expect(dimensions.height).toBeGreaterThan(0);
+});
+
+test('移动端长公式不产生横向裁切', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openPage(page, chapterPath);
+
+  const overflow = await page.locator('mjx-container[display="true"]').evaluateAll((nodes) =>
+    nodes
+      .map((node, index) => ({
+        index,
+        text: node.textContent,
+        clientWidth: node.clientWidth,
+        scrollWidth: node.scrollWidth,
+      }))
+      .filter(({ scrollWidth, clientWidth }) => scrollWidth > clientWidth + 1),
+  );
+
+  expect(overflow, `以下公式被横向裁切：${JSON.stringify(overflow)}`).toEqual([]);
 });
 
 test('禁用 JavaScript 时两幅后备图可见且有替代文本', async ({ browser }) => {

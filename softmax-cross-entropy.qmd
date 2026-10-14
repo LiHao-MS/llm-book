@@ -37,7 +37,12 @@ $$
 省略位置上标后，Softmax 将 Logit 向量 $z\in\mathbb{R}^{V}$ 映射为概率向量 $p$：
 
 $$
-p_i=\operatorname{softmax}(z)_i=\frac{\exp(z_i)}{\sum_{j=1}^{V}\exp(z_j)},\qquad i=1,\ldots,V.
+\begin{aligned}
+p_i
+&=\operatorname{softmax}(z)_i
+=\frac{\exp(z_i)}{\sum_{j=1}^{V}\exp(z_j)},\\
+&\qquad i=1,\ldots,V.
+\end{aligned}
 $$
 
 分母对**整个词表**求和，因此 $p_i>0$ 且 $\sum_i p_i=1$。只在一组 Top-k 候选上归一化，得到的是截断后的另一个分布，不能与原式混为一谈。
@@ -61,9 +66,11 @@ $$
 在训练样本上最大化对数似然，与最小化 NLL 之和等价：
 
 $$
+\begin{aligned}
 \hat{\theta}
-=\arg\max_\theta\sum_t\log p_\theta(x_{t+1}\mid x_{\leq t})
-=\arg\min_\theta\sum_t\mathcal{L}_t(\theta).
+&=\arg\max_\theta\sum_t\log p_\theta(x_{t+1}\mid x_{\leq t})\\
+&=\arg\min_\theta\sum_t\mathcal{L}_t(\theta).
+\end{aligned}
 $$
 
 这就是最大似然估计（Maximum Likelihood Estimation，MLE）在下一 Token 预测中的形式；深度学习教材通常也从这一视角讨论输出分布与损失函数 [@goodfellow2016deep]。对 one-hot 目标，交叉熵与 NLL 是同一个量：
@@ -97,17 +104,23 @@ $$
 对单个目标 Token，困惑度（Perplexity）定义为其 NLL 的指数：
 
 $$
-\operatorname{PPL}_t=\exp(\mathcal{L}_t)
-=\exp(-\log p_y)=\frac{1}{p_y}.
+\begin{aligned}
+\operatorname{PPL}_t
+&=\exp(\mathcal{L}_t)
+=\exp(-\log p_y)\\
+&=\frac{1}{p_y}.
+\end{aligned}
 $$
 
 它是“这一目标概率”的单调变换，而不是对整个语料质量的独立测量。若语料中共有 $N$ 个目标 Token，第 $n$ 个目标及其上下文为 $(y_n,c_n)$，则先计算**平均 NLL**：
 
 $$
+\begin{aligned}
 \overline{\mathcal{L}}
-=-\frac{1}{N}\sum_{n=1}^{N}\log p_\theta(y_n\mid c_n),
-\qquad
-\operatorname{PPL}_{\text{corpus}}=\exp(\overline{\mathcal{L}}).
+&=-\frac{1}{N}\sum_{n=1}^{N}\log p_\theta(y_n\mid c_n),\\
+\operatorname{PPL}_{\text{corpus}}
+&=\exp(\overline{\mathcal{L}}).
+\end{aligned}
 $$
 
 顺序不能交换：记 $p_n=p_\theta(y_n\mid c_n)$，语料困惑度不是 $\frac{1}{N}\sum_n(1/p_n)$，也不是单 Token 困惑度的算术平均。困惑度还依赖语料和 Tokenization；比较不同模型时，必须确认评测数据与计数口径一致，不能把数值差异直接解释为普遍的语言能力差异。
@@ -148,9 +161,10 @@ $$
 Nucleus Sampling，即 **Top-p 采样**，改为从累计概率达到阈值的动态候选集中采样 [@holtzman2019curious]。将概率按降序排列为 $p_{\pi(1)}\geq\cdots\geq p_{\pi(V)}$，对阈值 $p\in(0,1]$，取最小集合
 
 $$
-S_p=\{\pi(1),\ldots,\pi(K)\},
-\qquad
-K=\min\left\{k:\sum_{r=1}^{k}p_{\pi(r)}\geq p\right\}.
+\begin{aligned}
+S_p&=\{\pi(1),\ldots,\pi(K)\},\\
+K&=\min\left\{k:\sum_{r=1}^{k}p_{\pi(r)}\geq p\right\}.
+\end{aligned}
 $$
 
 累计和首次达到或越过阈值的那个候选也必须保留。随后令 $Z_p=\sum_{i\in S_p}p_i$，重新定义
