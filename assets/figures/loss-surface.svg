@@ -56,14 +56,14 @@
     <circle cx="240" cy="375" r="7" fill="#B55224" stroke="#FFFFFF" stroke-width="2"/>
     <text x="205" y="405" font-size="18" fill="#8C421F">最小点 c = (1, −0.5)</text>
     <circle cx="420" cy="195" r="7" fill="#172B3A" stroke="#FFFFFF" stroke-width="2"/>
-    <text x="433" y="185" font-size="19" font-weight="700">θ = (3, 1.5)</text>
+    <text x="450" y="170" font-size="19" font-weight="700">θ = (3, 1.5)</text>
     <circle cx="375" cy="240" r="7" fill="#1F648C" stroke="#FFFFFF" stroke-width="2"/>
-    <text x="383" y="266" font-size="18" fill="#1F648C">θ⁺ = (2.5, 1.0)</text>
+    <text x="395" y="268" font-size="18" fill="#1F648C">θ⁺ = (2.5, 1.0)</text>
 
     <line x1="420" y1="195" x2="510" y2="105" stroke="#4C5F6A" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#dark-arrow)"/>
     <text x="465" y="119" font-size="17" fill="#4C5F6A">+g 方向（0.5g）</text>
     <line x1="420" y1="195" x2="240" y2="375" stroke="#B55224" stroke-width="3" stroke-dasharray="10 7" marker-end="url(#orange-arrow)"/>
-    <text x="286" y="270" font-size="19" fill="#8C421F">−g = (−2, −2)</text>
+    <text x="340" y="315" font-size="19" fill="#8C421F">−g = (−2, −2)</text>
     <line x1="420" y1="195" x2="375" y2="240" stroke="#1F648C" stroke-width="5" marker-end="url(#blue-arrow)"/>
     <text x="427" y="224" font-size="18" fill="#1F648C">−ηg</text>
 
