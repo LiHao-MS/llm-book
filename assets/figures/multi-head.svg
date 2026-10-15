@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">两个头的不同注意力模式</title>
+  <desc id="desc">同一三行二维输入按坐标拆成两个一维头，两头产生不同的三乘三注意力权重和不同输出列，最后按坐标拼接。</desc>
+  <rect width="1200" height="760" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="42" text-anchor="middle" font-size="30" font-weight="700">两个头在同一输入上的不同注意力模式</text>
+    <text x="600" y="78" text-anchor="middle" font-size="18" fill="#4C5F6A">Q = K = V = [[1,0], [0,1], [1,1]]；按末维拆头，每头 dₖ = 1、缩放因子 = 1</text>
+
+    <rect x="55" y="105" width="500" height="430" rx="14" fill="#F8FAFB" stroke="#1F648C" stroke-width="2"/>
+    <text x="305" y="145" text-anchor="middle" font-size="25" font-weight="700" fill="#1F648C">头 1：只使用第 1 坐标</text>
+    <text x="305" y="177" text-anchor="middle" font-size="18" fill="#4C5F6A">Q₁ = K₁ = V₁ = [[1], [0], [1]]</text>
+    <g font-size="18" text-anchor="middle">
+      <text x="132" y="220">q₁</text><text x="132" y="290">q₂</text><text x="132" y="360">q₃</text>
+      <text x="210" y="199">k₁</text><text x="320" y="199">k₂</text><text x="430" y="199">k₃</text>
+      <rect x="155" y="210" width="110" height="60" fill="#DCECF4" stroke="#8A9AA5"/>
+      <rect x="265" y="210" width="110" height="60" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="375" y="210" width="110" height="60" fill="#DCECF4" stroke="#8A9AA5"/>
+      <rect x="155" y="280" width="110" height="60" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="265" y="280" width="110" height="60" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="375" y="280" width="110" height="60" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="155" y="350" width="110" height="60" fill="#DCECF4" stroke="#8A9AA5"/>
+      <rect x="265" y="350" width="110" height="60" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="375" y="350" width="110" height="60" fill="#DCECF4" stroke="#8A9AA5"/>
+      <text x="210" y="247">0.4223</text><text x="320" y="247">0.1554</text><text x="430" y="247">0.4223</text>
+      <text x="210" y="317">0.3333</text><text x="320" y="317">0.3333</text><text x="430" y="317">0.3333</text>
+      <text x="210" y="387">0.4223</text><text x="320" y="387">0.1554</text><text x="430" y="387">0.4223</text>
+    </g>
+    <text x="305" y="450" text-anchor="middle" font-size="19">输出列 o⁽¹⁾ = (0.8446, 0.6667, 0.8446)ᵀ</text>
+    <text x="305" y="490" text-anchor="middle" font-size="17" fill="#4C5F6A">每行权重和 = 1</text>
+
+    <rect x="645" y="105" width="500" height="430" rx="14" fill="#FBF8F3" stroke="#B55224" stroke-width="2"/>
+    <text x="895" y="145" text-anchor="middle" font-size="25" font-weight="700" fill="#8C421F">头 2：只使用第 2 坐标</text>
+    <text x="895" y="177" text-anchor="middle" font-size="18" fill="#4C5F6A">Q₂ = K₂ = V₂ = [[0], [1], [1]]</text>
+    <g font-size="18" text-anchor="middle">
+      <text x="722" y="220">q₁</text><text x="722" y="290">q₂</text><text x="722" y="360">q₃</text>
+      <text x="800" y="199">k₁</text><text x="910" y="199">k₂</text><text x="1020" y="199">k₃</text>
+      <rect x="745" y="210" width="110" height="60" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="855" y="210" width="110" height="60" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="965" y="210" width="110" height="60" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="745" y="280" width="110" height="60" fill="#F8E6DE" stroke="#8A9AA5"/>
+      <rect x="855" y="280" width="110" height="60" fill="#F3EEE8" stroke="#8A9AA5"/>
+      <rect x="965" y="280" width="110" height="60" fill="#F3EEE8" stroke="#8A9AA5"/>
+      <rect x="745" y="350" width="110" height="60" fill="#F8E6DE" stroke="#8A9AA5"/>
+      <rect x="855" y="350" width="110" height="60" fill="#F3EEE8" stroke="#8A9AA5"/>
+      <rect x="965" y="350" width="110" height="60" fill="#F3EEE8" stroke="#8A9AA5"/>
+      <text x="800" y="247">0.3333</text><text x="910" y="247">0.3333</text><text x="1020" y="247">0.3333</text>
+      <text x="800" y="317">0.1554</text><text x="910" y="317">0.4223</text><text x="1020" y="317">0.4223</text>
+      <text x="800" y="387">0.1554</text><text x="910" y="387">0.4223</text><text x="1020" y="387">0.4223</text>
+    </g>
+    <text x="895" y="450" text-anchor="middle" font-size="19">输出列 o⁽²⁾ = (0.6667, 0.8446, 0.8446)ᵀ</text>
+    <text x="895" y="490" text-anchor="middle" font-size="17" fill="#4C5F6A">同一输入，不同子空间</text>
+
+    <rect x="125" y="575" width="950" height="135" rx="14" fill="#F3F4F5" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="600" y="615" text-anchor="middle" font-size="22" font-weight="700">Concat(o⁽¹⁾, o⁽²⁾)：按坐标拼接，不再平均两个头</text>
+    <text x="600" y="660" text-anchor="middle" font-size="23">[[0.8446, 0.6667], [0.6667, 0.8446], [0.8446, 0.8446]]</text>
+    <text x="600" y="696" text-anchor="middle" font-size="17" fill="#4C5F6A">这是教学内核的拆分约定；完整 MHA 另有每头学习投影与输出投影 Wᴼ</text>
+    <text x="600" y="740" text-anchor="middle" font-size="16" fill="#4C5F6A">显示值四舍五入；所有权重均先由各自头的分数逐行 Softmax 得到</text>
+  </g>
+</svg>

@@ -65,6 +65,13 @@ llm-decoding-explorer {
   font-weight: 600;
 }
 
+.interactive-control-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #8c421f;
+  font-size: 0.9rem;
+}
+
 .interactive-control input[type='range'] {
   inline-size: 100%;
   min-block-size: 2rem;
@@ -424,5 +431,138 @@ llm-lr-schedule {
 @media (max-width: 36rem) {
   .optimizer-controls {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+llm-attention-matrix,
+llm-rope-rotation {
+  display: block;
+}
+
+.attention-matrices,
+.attention-charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.attention-matrices,
+.attention-charts {
+  margin-top: 1rem;
+}
+
+.attention-table-wrap {
+  overflow-x: auto;
+  background: #ffffff;
+  border-radius: 0.25rem;
+}
+
+.attention-table-wrap:focus-visible {
+  outline: 3px solid #8c421f;
+  outline-offset: 3px;
+}
+
+.attention-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.attention-table caption {
+  padding: 0.5rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.attention-table th,
+.attention-table td {
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid #dde3e7;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.attention-table th:first-child {
+  text-align: left;
+}
+
+.attention-weight-bar {
+  fill: #2f6f8f;
+}
+
+.attention-output-bar {
+  fill: #c65d21;
+}
+
+.rope-unit-circle {
+  fill: none;
+  stroke: #dde3e7;
+  stroke-dasharray: 5 4;
+}
+
+.rope-original-vector,
+.rope-rotated-vector {
+  stroke-linecap: round;
+}
+
+.rope-original-vector {
+  stroke: #5e6a70;
+  stroke-dasharray: 7 5;
+  stroke-width: 2;
+}
+
+.rope-rotated-vector {
+  stroke: #c65d21;
+  stroke-width: 3;
+}
+
+.rope-angle-arc {
+  fill: none;
+  stroke: #1f648c;
+  stroke-width: 2;
+}
+
+.rope-original-point {
+  fill: #5e6a70;
+}
+
+.rope-rotated-point {
+  fill: #c65d21;
+}
+
+.interactive-chart .rope-rotated-label {
+  fill: #8c421f;
+  font-weight: 600;
+}
+
+.attention-scale-control {
+  grid-template-columns: minmax(7rem, auto) minmax(8rem, 1fr) minmax(7rem, auto);
+}
+
+.attention-scale-control input[type='number'] {
+  inline-size: 100%;
+  min-block-size: 2.5rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #8b969c;
+  border-radius: 0.25rem;
+  background: #ffffff;
+  color: #172b3a;
+  font: inherit;
+}
+
+.attention-scale-control input[type='number']:focus-visible {
+  outline: 3px solid #8c421f;
+  outline-offset: 3px;
+}
+
+@media (max-width: 36rem) {
+  .attention-controls,
+  .attention-matrices,
+  .attention-charts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .attention-scale-control {
+    grid-template-columns: minmax(0, 1fr) minmax(7rem, auto);
   }
 }

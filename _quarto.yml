@@ -17,6 +17,7 @@ book:
     - softmax-cross-entropy.qmd
     - embedding-geometry.qmd
     - optimization.qmd
+    - attention.qmd
 
 lang: zh-CN
 bibliography: references.bib

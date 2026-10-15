@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">缩放点积注意力：从分数到值加权输出</title>
+  <desc id="desc">第一个查询的三个缩放分数经 Softmax 变为和为一的权重，再对三个 Value 向量加权，得到可复核的二维输出。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4C5F6A"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="680" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="44" text-anchor="middle" font-size="30" font-weight="700">缩放点积注意力：从分数到值加权输出</text>
+    <text x="600" y="82" text-anchor="middle" font-size="19" fill="#4C5F6A">Q = K = V = [[1,0], [0,1], [1,1]]，dₖ = 2；以下跟踪 q₁ = (1,0)</text>
+
+    <rect x="45" y="112" width="320" height="360" rx="14" fill="#F8FAFB" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="205" y="150" text-anchor="middle" font-size="23" font-weight="700">1　缩放分数 s₁ⱼ</text>
+    <text x="205" y="180" text-anchor="middle" font-size="18" fill="#4C5F6A">s₁ⱼ = q₁·kⱼ / √2</text>
+    <g font-size="19" text-anchor="middle">
+      <text x="92" y="222">k₁</text><text x="92" y="302">k₂</text><text x="92" y="382">k₃</text>
+      <rect x="132" y="190" width="180" height="54" rx="7" fill="#DCECF4" stroke="#1F648C" stroke-width="2"/>
+      <rect x="132" y="270" width="180" height="54" rx="7" fill="#FFFFFF" stroke="#8A9AA5" stroke-width="2"/>
+      <rect x="132" y="350" width="180" height="54" rx="7" fill="#DCECF4" stroke="#1F648C" stroke-width="2"/>
+      <text x="222" y="225">0.7071</text><text x="222" y="305">0</text><text x="222" y="385">0.7071</text>
+    </g>
+    <text x="205" y="444" text-anchor="middle" font-size="17" fill="#4C5F6A">先做点积与缩放，尚未归一化</text>
+
+    <line x1="374" y1="292" x2="423" y2="292" stroke="#4C5F6A" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="399" y="270" text-anchor="middle" font-size="16" fill="#4C5F6A">逐行</text>
+    <text x="399" y="320" text-anchor="middle" font-size="16" fill="#4C5F6A">Softmax</text>
+
+    <rect x="432" y="112" width="320" height="360" rx="14" fill="#FBF8F3" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="592" y="150" text-anchor="middle" font-size="23" font-weight="700">2　注意力权重 α₁ⱼ</text>
+    <text x="592" y="180" text-anchor="middle" font-size="18" fill="#4C5F6A">α₁ⱼ = exp(s₁ⱼ) / Σᵣexp(s₁ᵣ)</text>
+    <g font-size="19" text-anchor="middle">
+      <text x="479" y="222">j=1</text><text x="479" y="302">j=2</text><text x="479" y="382">j=3</text>
+      <rect x="519" y="190" width="180" height="54" rx="7" fill="#E4F0E7" stroke="#39704A" stroke-width="2"/>
+      <rect x="519" y="270" width="180" height="54" rx="7" fill="#FFFFFF" stroke="#8A9AA5" stroke-width="2"/>
+      <rect x="519" y="350" width="180" height="54" rx="7" fill="#E4F0E7" stroke="#39704A" stroke-width="2"/>
+      <text x="609" y="225">0.4011</text><text x="609" y="305">0.1978</text><text x="609" y="385">0.4011</text>
+    </g>
+    <text x="592" y="444" text-anchor="middle" font-size="18" font-weight="700" fill="#39704A">0.4011 + 0.1978 + 0.4011 = 1</text>
+
+    <line x1="761" y1="292" x2="810" y2="292" stroke="#4C5F6A" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="786" y="270" text-anchor="middle" font-size="16" fill="#4C5F6A">只对 V</text>
+    <text x="786" y="320" text-anchor="middle" font-size="16" fill="#4C5F6A">加权</text>
+
+    <rect x="819" y="112" width="336" height="360" rx="14" fill="#F8FAFB" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="987" y="150" text-anchor="middle" font-size="23" font-weight="700">3　Value 与贡献</text>
+    <g font-size="18">
+      <text x="855" y="209">v₁ = (1,0)</text><text x="855" y="237" fill="#4C5F6A">0.4011 v₁</text>
+      <text x="855" y="289">v₂ = (0,1)</text><text x="855" y="317" fill="#4C5F6A">0.1978 v₂</text>
+      <text x="855" y="369">v₃ = (1,1)</text><text x="855" y="397" fill="#4C5F6A">0.4011 v₃</text>
+    </g>
+    <text x="987" y="444" text-anchor="middle" font-size="17" fill="#4C5F6A">权重来自 Q/K，内容来自 V</text>
+
+    <rect x="80" y="510" width="1040" height="118" rx="14" fill="#F3EEE8" stroke="#B55224" stroke-width="2"/>
+    <text x="600" y="553" text-anchor="middle" font-size="23" font-weight="700">o₁ = 0.4011(1,0) + 0.1978(0,1) + 0.4011(1,1)</text>
+    <text x="600" y="596" text-anchor="middle" font-size="28" font-weight="700" fill="#8C421F">≈ (0.8022, 0.5989)</text>
+    <text x="600" y="657" text-anchor="middle" font-size="16" fill="#4C5F6A">显示值四舍五入；未舍入结果为 (0.8022241854, 0.5988879073)</text>
+  </g>
+</svg>

@@ -16,6 +16,7 @@ const htmlPath = join(bookDir, 'index.html');
 const chapterHtmlPath = join(bookDir, 'softmax-cross-entropy.html');
 const geometryHtmlPath = join(bookDir, 'embedding-geometry.html');
 const optimizationHtmlPath = join(bookDir, 'optimization.html');
+const attentionHtmlPath = join(bookDir, 'attention.html');
 const pdfPath = join(bookDir, 'llm-book.pdf');
 
 function directorySize(directory) {
@@ -46,6 +47,11 @@ function readGeometryHtml() {
 function readOptimizationHtml() {
   assert.ok(existsSync(optimizationHtmlPath), `${optimizationHtmlPath} does not exist`);
   return readFileSync(optimizationHtmlPath, 'utf8');
+}
+
+function readAttentionHtml() {
+  assert.ok(existsSync(attentionHtmlPath), `${attentionHtmlPath} does not exist`);
+  return readFileSync(attentionHtmlPath, 'utf8');
 }
 
 test('Softmax chapter HTML is published', () => {
@@ -247,6 +253,132 @@ test('Optimization chapter has no unresolved citation markers', () => {
   assert.doesNotMatch(readOptimizationHtml(), /\[\?\]/);
 });
 
+test('Attention chapter HTML is published with required learning content', () => {
+  const html = readAttentionHtml();
+  for (const text of [
+    '序列建模与自注意力机制',
+    'RNN',
+    '缩放点积注意力',
+    '多头注意力',
+    '因果掩码',
+    'RoPE',
+    '常见误解',
+    '练习',
+  ]) {
+    assert.ok(html.includes(text), `Chapter is missing required text: ${text}`);
+  }
+});
+
+test('Attention chapter references all static figures', () => {
+  const html = readAttentionHtml();
+  for (const figure of [
+    'assets/figures/attention-scores.svg',
+    'assets/figures/causal-mask.svg',
+    'assets/figures/multi-head.svg',
+    'assets/figures/rope-rotation.svg',
+  ]) {
+    assert.ok(html.includes(figure), `Chapter does not reference ${figure}`);
+  }
+});
+
+test('Attention chapter exposes stable section and figure anchors', () => {
+  const html = readAttentionHtml();
+  for (const anchor of [
+    'sec-rnn-limits',
+    'sec-attention',
+    'sec-scaled-attention',
+    'sec-multi-head',
+    'sec-causal-mask',
+    'sec-rope',
+    'fig-attention-scores',
+    'fig-causal-mask',
+    'fig-multi-head',
+    'fig-rope-rotation',
+  ]) {
+    assert.ok(html.includes(`id="${anchor}"`), `Chapter is missing #${anchor}`);
+  }
+});
+
+test('Attention chapter cites the four required sources', () => {
+  const html = readAttentionHtml();
+  const citationKeys = new Set(
+    [...html.matchAll(/data-cites="([^"]*)"/g)].flatMap((match) =>
+      match[1].split(/\s+/),
+    ),
+  );
+  for (const key of [
+    'bahdanau2014neural',
+    'luong2015effective',
+    'vaswani2017attention',
+    'su2021roformer',
+  ]) {
+    assert.ok(citationKeys.has(key), `Chapter does not cite ${key}`);
+  }
+});
+
+test('Attention chapter has no unresolved citation markers', () => {
+  assert.doesNotMatch(readAttentionHtml(), /\[\?\]/);
+});
+
+test('Typst PDF contains attention chapter and key attention terms', () => {
+  const text = execFileSync('pdftotext', ['-layout', pdfPath, '-'], {
+    encoding: 'utf8',
+    maxBuffer: 10 * 1024 * 1024,
+  });
+  for (const requiredText of [
+    '序列建模与自注意力机制',
+    'Softmax',
+    'RoPE',
+    '因果掩码',
+  ]) {
+    assert.ok(text.includes(requiredText), `PDF is missing text: ${requiredText}`);
+  }
+});
+
+test('Typst PDF contains attention formulas, figures, exercises, and resolved references', () => {
+  const text = execFileSync('pdftotext', ['-layout', pdfPath, '-'], {
+    encoding: 'utf8',
+    maxBuffer: 10 * 1024 * 1024,
+  });
+  const chapterStart = text.indexOf('5. 序列建模与自注意力机制');
+  assert.ok(chapterStart >= 0, 'PDF is missing the attention chapter body');
+  const chapterText = text.slice(chapterStart);
+
+  for (const requiredText of [
+    '第一个查询的缩放分数经 Softmax 变为行归一化权重，再对 Value 加权得到输出',
+    '两个一维头从同一输入的不同坐标产生不同注意力矩阵，再按坐标拼接输出',
+    '因果掩码把严格上三角分数设为负无穷，Softmax 后未来位置权重为零',
+    'RoPE 将二维向量逆时针旋转并保持范数，Query 与 Key 的相对夹角由位置差决定',
+    '分析递归路径',
+    '手算值加权输出',
+    '推导缩放尺度',
+    '检查多头形状',
+    '执行因果掩码',
+    '区分两种掩码',
+    '核对 RoPE 方向与范数',
+    '推导相对位置',
+    '反驳固定标签解释',
+  ]) {
+    assert.ok(chapterText.includes(requiredText), `PDF is missing text: ${requiredText}`);
+  }
+  for (const formula of [
+    /ℎ𝑡\s*=\s*𝑓𝜃\s*\(𝑥𝑡\s*,\s*ℎ𝑡−1\s*\)/,
+    /𝑜\s*=\s*∑\s*𝛼𝑗\s*𝑣𝑗/,
+    /𝑄𝐾\s*𝘛/,
+    /√𝑑𝑘/,
+    /𝐴\s*=\s*softmaxrow\s*\(𝑆\)/,
+    /𝑂\s*=\s*𝐴𝑉/,
+    /MHA\s*\(𝑋\)\s*=\s*Concat𝐻/,
+    /𝐴\s*=\s*softmaxrow\s*\(𝑆\s*\+\s*𝑀\s*\)/,
+    /⟨𝑅\(𝑚𝜃\)𝑞,\s*𝑅\(𝑛𝜃\)𝑘⟩\s*=\s*𝑞\s*𝘛\s*𝑅\(𝑚𝜃\)𝘛\s*𝑅\(𝑛𝜃\)𝑘/,
+    /=\s*𝑞\s*𝘛\s*𝑅\(\(𝑛\s*−\s*𝑚\)𝜃\)𝑘/,
+  ]) {
+    assert.match(chapterText, formula);
+  }
+  assert.match(chapterText, /5\.11\s+练习/);
+  assert.doesNotMatch(chapterText, /\[\?\]|@(?:fig|sec)-[a-z0-9-]+/);
+});
+
 test('Typst PDF contains optimization chapter and key optimization terms', () => {
   const text = execFileSync('pdftotext', ['-layout', pdfPath, '-'], {
     encoding: 'utf8',
@@ -352,7 +484,7 @@ test('published site stays below the GitHub Pages 1 GB limit', () => {
 test('emitted HTML has no third-party runtime dependencies', () => {
   const runtimePattern = /<(?:script|link|img|iframe|source|embed|object|video|audio|track|input)\b[^>]*\b(?:src|href|data|poster)\s*=\s*["'](?:https?:)?\/\//gi;
   const cssPattern = /(?:@import\s+(?:url\()?|url\()\s*["']?(?:https?:)?\/\//gi;
-  for (const path of [htmlPath, chapterHtmlPath, geometryHtmlPath, optimizationHtmlPath]) {
+  for (const path of [htmlPath, chapterHtmlPath, geometryHtmlPath, optimizationHtmlPath, attentionHtmlPath]) {
     assert.ok(existsSync(path), `${path} does not exist`);
     const html = readFileSync(path, 'utf8');
     assert.deepEqual([...html.matchAll(runtimePattern)].map((match) => match[0]), []);
@@ -553,6 +685,22 @@ test('Matrix figure keeps transformed vertical grid lines collinear with Ae2', (
   }
 });
 
+test('causal mask figure separates the score-panel title from column labels', () => {
+  const svg = readFileSync(join(projectRoot, 'assets/figures/causal-mask.svg'), 'utf8');
+  const title = svg.match(/<text x="195" y="([0-9.]+)"[^>]*>原始分数 S<\/text>/);
+  assert.ok(title, 'Score-panel title is missing');
+  const labels = [...svg.matchAll(
+    /<text x="(?:135|215|295)" y="([0-9.]+)">k[₁₂₃]<\/text>/g,
+  )];
+  assert.equal(labels.length, 3);
+  for (const label of labels) {
+    assert.ok(
+      Number(label[1]) - Number(title[1]) >= 30,
+      'Score-panel title leaves less than 30 SVG units before the column labels',
+    );
+  }
+});
+
 test('Typst PDF uses Chinese chapter labels and keeps all static figures', () => {
   const text = execFileSync('pdftotext', ['-layout', pdfPath, '-'], {
     encoding: 'utf8',
@@ -563,7 +711,8 @@ test('Typst PDF uses Chinese chapter labels and keeps all static figures', () =>
   assert.match(text, /章节\s+2\.\s+从 Softmax 到交叉熵/);
   assert.match(text, /章节\s+3\.\s+向量、矩阵与 Embedding 几何/);
   assert.match(text, /章节\s+4\.\s+优化：从经验风险到 AdamW/);
-  assert.doesNotMatch(text, /Chapter\s+[1234]\./);
+  assert.match(text, /章节\s+5\.\s+序列建模与自注意力机制/);
+  assert.doesNotMatch(text, /Chapter\s+[12345]\./);
   for (const figureText of [
     '从上下文到下一 Token 分布',
     '交叉熵：L(p) = −ln p',
@@ -571,6 +720,10 @@ test('Typst PDF uses Chinese chapter labels and keeps all static figures', () =>
     '二维二次损失的等高线、负梯度方向与学习率缩放后的实际更新',
     'Warmup、cosine 学习率与全局范数裁剪',
     '同一二维二次损失上 SGD、Momentum、Adam 和 AdamW 的十步优化轨迹',
+    '第一个查询的缩放分数经 Softmax 变为行归一化权重，再对 Value 加权得到输出',
+    '两个一维头从同一输入的不同坐标产生不同注意力矩阵，再按坐标拼接输出',
+    '因果掩码把严格上三角分数设为负无穷，Softmax 后未来位置权重为零',
+    'RoPE 将二维向量逆时针旋转并保持范数，Query 与 Key 的相对夹角由位置差决定',
   ]) {
     assert.ok(text.includes(figureText), `PDF is missing figure text: ${figureText}`);
   }

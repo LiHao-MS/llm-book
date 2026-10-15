@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">因果掩码：Softmax 前屏蔽严格上三角</title>
+  <desc id="desc">三乘三分数矩阵的严格上三角变为负无穷，逐行 Softmax 后未来位置权重为零，主对角线保留且每行和为一。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4C5F6A"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="680" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="44" text-anchor="middle" font-size="30" font-weight="700">因果掩码：未来权重必须在 Softmax 前消失</text>
+    <text x="600" y="82" text-anchor="middle" font-size="20" fill="#4C5F6A">Mᵢⱼ = 0（j ≤ i），Mᵢⱼ = −∞（j &gt; i）；A = softmax(S + M)（逐行）</text>
+
+    <text x="195" y="110" text-anchor="middle" font-size="24" font-weight="700">原始分数 S</text>
+    <text x="600" y="110" text-anchor="middle" font-size="24" font-weight="700">掩码后 S + M</text>
+    <text x="1000" y="110" text-anchor="middle" font-size="24" font-weight="700">注意力权重 A</text>
+
+    <g font-size="20" text-anchor="middle">
+      <text x="75" y="183">q₁</text><text x="75" y="273">q₂</text><text x="75" y="363">q₃</text>
+      <text x="135" y="145">k₁</text><text x="215" y="145">k₂</text><text x="295" y="145">k₃</text>
+      <rect x="95" y="155" width="80" height="70" fill="#DCECF4" stroke="#8A9AA5"/>
+      <rect x="175" y="155" width="80" height="70" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="255" y="155" width="80" height="70" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="95" y="245" width="80" height="70" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="175" y="245" width="80" height="70" fill="#DCECF4" stroke="#8A9AA5"/>
+      <rect x="255" y="245" width="80" height="70" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="95" y="335" width="80" height="70" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="175" y="335" width="80" height="70" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="255" y="335" width="80" height="70" fill="#DCECF4" stroke="#8A9AA5"/>
+      <text x="135" y="199">2</text><text x="215" y="199">1</text><text x="295" y="199">3</text>
+      <text x="135" y="289">1</text><text x="215" y="289">1</text><text x="295" y="289">1</text>
+      <text x="135" y="379">3</text><text x="215" y="379">1</text><text x="295" y="379">2</text>
+    </g>
+
+    <line x1="355" y1="280" x2="425" y2="280" stroke="#4C5F6A" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="390" y="251" text-anchor="middle" font-size="17" fill="#8C421F">Softmax 前</text>
+    <text x="390" y="310" text-anchor="middle" font-size="17" fill="#8C421F">加 M</text>
+
+    <g font-size="20" text-anchor="middle">
+      <rect x="460" y="155" width="90" height="70" fill="#DCECF4" stroke="#39704A" stroke-width="2"/>
+      <rect x="550" y="155" width="90" height="70" fill="#F8E6DE" stroke="#B55224" stroke-width="2"/>
+      <rect x="640" y="155" width="90" height="70" fill="#F8E6DE" stroke="#B55224" stroke-width="2"/>
+      <rect x="460" y="245" width="90" height="70" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="550" y="245" width="90" height="70" fill="#DCECF4" stroke="#39704A" stroke-width="2"/>
+      <rect x="640" y="245" width="90" height="70" fill="#F8E6DE" stroke="#B55224" stroke-width="2"/>
+      <rect x="460" y="335" width="90" height="70" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="550" y="335" width="90" height="70" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="640" y="335" width="90" height="70" fill="#DCECF4" stroke="#39704A" stroke-width="2"/>
+      <text x="505" y="199">2</text><text x="595" y="199" fill="#8C421F">−∞</text><text x="685" y="199" fill="#8C421F">−∞</text>
+      <text x="505" y="289">1</text><text x="595" y="289">1</text><text x="685" y="289" fill="#8C421F">−∞</text>
+      <text x="505" y="379">3</text><text x="595" y="379">1</text><text x="685" y="379">2</text>
+    </g>
+
+    <line x1="750" y1="280" x2="820" y2="280" stroke="#4C5F6A" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="785" y="251" text-anchor="middle" font-size="17" fill="#4C5F6A">逐行</text>
+    <text x="785" y="310" text-anchor="middle" font-size="17" fill="#4C5F6A">Softmax</text>
+
+    <g font-size="19" text-anchor="middle">
+      <rect x="850" y="155" width="100" height="70" fill="#E4F0E7" stroke="#39704A" stroke-width="2"/>
+      <rect x="950" y="155" width="100" height="70" fill="#F3F4F5" stroke="#8A9AA5"/>
+      <rect x="1050" y="155" width="100" height="70" fill="#F3F4F5" stroke="#8A9AA5"/>
+      <rect x="850" y="245" width="100" height="70" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="950" y="245" width="100" height="70" fill="#E4F0E7" stroke="#39704A" stroke-width="2"/>
+      <rect x="1050" y="245" width="100" height="70" fill="#F3F4F5" stroke="#8A9AA5"/>
+      <rect x="850" y="335" width="100" height="70" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="950" y="335" width="100" height="70" fill="#FFFFFF" stroke="#8A9AA5"/>
+      <rect x="1050" y="335" width="100" height="70" fill="#E4F0E7" stroke="#39704A" stroke-width="2"/>
+      <text x="900" y="199">1</text><text x="1000" y="199">0</text><text x="1100" y="199">0</text>
+      <text x="900" y="289">0.5000</text><text x="1000" y="289">0.5000</text><text x="1100" y="289">0</text>
+      <text x="900" y="379">0.6652</text><text x="1000" y="379">0.0900</text><text x="1100" y="379">0.2447</text>
+    </g>
+
+    <g font-size="18">
+      <rect x="85" y="470" width="24" height="24" fill="#F8E6DE" stroke="#B55224"/>
+      <text x="125" y="490">严格上三角 j &gt; i：屏蔽，exp(−∞) = 0</text>
+      <rect x="85" y="520" width="24" height="24" fill="#DCECF4" stroke="#39704A"/>
+      <text x="125" y="540">主对角线 j = i：保留，避免整行无可归一化位置</text>
+      <text x="650" y="490">三行权重和均为 1</text>
+      <text x="650" y="540">零分不是 −∞：softmax(0) 仍大于 0</text>
+    </g>
+    <rect x="85" y="585" width="1030" height="58" rx="10" fill="#FBF8F3" stroke="#C4CDD2"/>
+    <text x="600" y="622" text-anchor="middle" font-size="19">行 1 只看当前；行 2 看当前与过去；行 3 可看全部三个位置</text>
+  </g>
+</svg>
