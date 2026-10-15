@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Warmup、cosine 学习率与全局范数裁剪</title>
+  <desc id="desc">左侧绘制带十个 warmup 步的 cosine 学习率曲线，右侧用梯度 (3,4) 和阈值 2 展示全局范数裁剪后的向量 (1.2,1.6)。</desc>
+  <defs>
+    <marker id="schedule-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1F648C"/>
+    </marker>
+    <marker id="original-gradient-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#B55224"/>
+    </marker>
+    <marker id="clipped-gradient-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1F648C"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="700" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="42" text-anchor="middle" font-size="30" font-weight="700">Warmup、cosine 学习率与全局范数裁剪</text>
+
+    <rect x="45" y="75" width="600" height="570" rx="14" fill="#F8FAFB" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="345" y="112" text-anchor="middle" font-size="21" font-weight="700">学习率 schedule</text>
+    <text x="345" y="140" text-anchor="middle" font-size="17" fill="#4C5F6A">T = 100，W = 10，ηmax = 10⁻³，ηmin = 10⁻⁴</text>
+    <g stroke="#E0E5E8" stroke-width="1">
+      <line x1="100" y1="460" x2="580" y2="460"/>
+      <line x1="100" y1="360" x2="580" y2="360"/>
+      <line x1="100" y1="260" x2="580" y2="260"/>
+      <line x1="100" y1="160" x2="580" y2="160"/>
+      <line x1="220" y1="160" x2="220" y2="560"/>
+      <line x1="340" y1="160" x2="340" y2="560"/>
+      <line x1="460" y1="160" x2="460" y2="560"/>
+    </g>
+    <line x1="100" y1="560" x2="590" y2="560" stroke="#172B3A" stroke-width="2"/>
+    <line x1="100" y1="560" x2="100" y2="150" stroke="#172B3A" stroke-width="2"/>
+    <text x="585" y="590" font-size="18">步数 t</text>
+    <text x="65" y="145" font-size="18">η</text>
+    <g font-size="14" fill="#4C5F6A" text-anchor="middle">
+      <text x="100" y="582">0</text><text x="220" y="582">25</text><text x="340" y="582">50</text><text x="460" y="582">75</text><text x="580" y="582">100</text>
+    </g>
+    <g font-size="14" fill="#4C5F6A" text-anchor="end">
+      <text x="90" y="565">0</text>
+      <text x="90" y="465">0.25×10⁻³</text>
+      <text x="90" y="365">0.50×10⁻³</text>
+      <text x="90" y="265">0.75×10⁻³</text>
+      <text x="90" y="165">1.00×10⁻³</text>
+    </g>
+    <line x1="100" y1="560" x2="148" y2="160" stroke="#B55224" stroke-width="4" marker-end="url(#schedule-arrow)"/>
+    <path d="M 148.00 160.00 L 172.00 162.73 L 196.00 170.86 L 220.00 184.12 L 244.00 202.11 L 268.00 224.30 L 292.00 250.00 L 316.00 278.44 L 340.00 308.74 L 364.00 340.00 L 388.00 371.26 L 412.00 401.56 L 436.00 430.00 L 460.00 455.70 L 484.00 477.89 L 508.00 495.88 L 532.00 509.14 L 556.00 517.27 L 580.00 520.00" fill="none" stroke="#1F648C" stroke-width="4" stroke-linecap="round" marker-end="url(#schedule-arrow)"/>
+    <line x1="148" y1="160" x2="148" y2="560" stroke="#B55224" stroke-width="1.5" stroke-dasharray="6 6"/>
+    <line x1="364" y1="340" x2="364" y2="560" stroke="#39704A" stroke-width="1.5" stroke-dasharray="6 6"/>
+    <circle cx="100" cy="560" r="5" fill="#B55224"/>
+    <circle cx="148" cy="160" r="6" fill="#B55224" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="364" cy="340" r="6" fill="#39704A" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="580" cy="520" r="6" fill="#1F648C" stroke="#FFFFFF" stroke-width="2"/>
+    <text x="160" y="183" font-size="16" fill="#8C421F">t = 10：峰值 10⁻³</text>
+    <text x="375" y="326" font-size="16" fill="#39704A">t = 55：0.55×10⁻³</text>
+    <text x="430" y="510" font-size="16" fill="#1F648C">t = 100：10⁻⁴</text>
+    <text x="110" y="620" font-size="17" fill="#8C421F">0 ≤ t ≤ 10：线性 warmup</text>
+    <text x="345" y="620" font-size="17" fill="#1F648C">10 &lt; t ≤ 100：cosine 下降</text>
+
+    <rect x="675" y="75" width="480" height="570" rx="14" fill="#FBF8F3" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="915" y="112" text-anchor="middle" font-size="21" font-weight="700">全局范数梯度裁剪</text>
+    <text x="720" y="155" font-size="20">g = (3, 4)，‖g‖₂ = 5，τ = 2</text>
+    <text x="720" y="195" font-size="20">c = min(1, τ/‖g‖₂) = 0.4</text>
+    <text x="720" y="235" font-size="20">g_clip = cg = (1.2, 1.6)</text>
+    <text x="720" y="270" font-size="18" fill="#4C5F6A">裁剪后范数：‖g_clip‖₂ = 2</text>
+    <g stroke="#E0E5E8" stroke-width="1">
+      <line x1="760" y1="435" x2="1110" y2="435"/>
+      <line x1="760" y1="525" x2="1110" y2="525"/>
+      <line x1="925" y1="300" x2="925" y2="600"/>
+      <line x1="1015" y1="300" x2="1015" y2="600"/>
+    </g>
+    <circle cx="835" cy="525" r="90" fill="none" stroke="#71558A" stroke-width="2" stroke-dasharray="7 6"/>
+    <line x1="760" y1="525" x2="1115" y2="525" stroke="#172B3A" stroke-width="2"/>
+    <line x1="835" y1="600" x2="835" y2="292" stroke="#172B3A" stroke-width="2"/>
+    <text x="1090" y="550" font-size="17">x</text>
+    <text x="815" y="305" font-size="17">y</text>
+    <line x1="835" y1="525" x2="970" y2="345" stroke="#B55224" stroke-width="3" marker-end="url(#original-gradient-arrow)"/>
+    <line x1="835" y1="525" x2="889" y2="453" stroke="#1F648C" stroke-width="6" marker-end="url(#clipped-gradient-arrow)"/>
+    <circle cx="835" cy="525" r="5" fill="#172B3A"/>
+    <text x="974" y="337" font-size="18" fill="#8C421F">g = (3, 4)</text>
+    <text x="895" y="477" font-size="18" fill="#1F648C">g_clip = (1.2, 1.6)</text>
+    <text x="925" y="420" font-size="17" fill="#71558A">虚线圆：阈值范数 2</text>
+    <text x="720" y="625" font-size="17" fill="#4C5F6A">同一缩放因子作用于所有坐标，方向保持不变</text>
+  </g>
+</svg>

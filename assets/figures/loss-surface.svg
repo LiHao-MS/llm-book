@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">二维二次损失：等高线与负梯度方向</title>
+  <desc id="desc">在二维二次损失 J(x,y) 的等高线上标出 theta、梯度、负梯度以及学习率缩放后的实际更新，并列出可复核的数值。</desc>
+  <defs>
+    <clipPath id="plot-clip"><rect x="60" y="60" width="480" height="450"/></clipPath>
+    <marker id="dark-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#172B3A"/>
+    </marker>
+    <marker id="orange-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#B55224"/>
+    </marker>
+    <marker id="blue-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1F648C"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="680" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="42" text-anchor="middle" font-size="30" font-weight="700">二维二次损失：等高线与负梯度方向</text>
+    <text x="300" y="91" text-anchor="middle" font-size="20">J(x,y) = 1/2[(x−1)² + (y+0.5)²]</text>
+
+    <rect x="60" y="60" width="480" height="450" fill="#F8FAFB" stroke="#8A9AA5" stroke-width="2"/>
+    <g stroke="#E0E5E8" stroke-width="1">
+      <line x1="60" y1="150" x2="540" y2="150"/>
+      <line x1="60" y1="240" x2="540" y2="240"/>
+      <line x1="60" y1="330" x2="540" y2="330"/>
+      <line x1="60" y1="420" x2="540" y2="420"/>
+      <line x1="150" y1="60" x2="150" y2="510"/>
+      <line x1="240" y1="60" x2="240" y2="510"/>
+      <line x1="330" y1="60" x2="330" y2="510"/>
+      <line x1="420" y1="60" x2="420" y2="510"/>
+      <line x1="510" y1="60" x2="510" y2="510"/>
+    </g>
+    <g clip-path="url(#plot-clip)" fill="none" stroke="#71818A" stroke-width="2">
+      <circle cx="240" cy="375" r="90"/>
+      <circle cx="240" cy="375" r="180"/>
+      <circle cx="240" cy="375" r="270"/>
+    </g>
+    <line x1="60" y1="330" x2="548" y2="330" stroke="#172B3A" stroke-width="2" marker-end="url(#dark-arrow)"/>
+    <line x1="150" y1="510" x2="150" y2="52" stroke="#172B3A" stroke-width="2" marker-end="url(#dark-arrow)"/>
+    <text x="552" y="337" font-size="20">x</text>
+    <text x="142" y="45" font-size="20">y</text>
+    <g font-size="15" fill="#4C5F6A" text-anchor="middle">
+      <text x="60" y="535">−1</text><text x="150" y="535">0</text><text x="240" y="535">1</text>
+      <text x="330" y="535">2</text><text x="420" y="535">3</text><text x="510" y="535">4</text>
+    </g>
+    <g font-size="15" fill="#4C5F6A" text-anchor="end">
+      <text x="140" y="515">−2</text><text x="140" y="425">−1</text><text x="140" y="335">0</text>
+      <text x="140" y="245">1</text><text x="140" y="155">2</text><text x="140" y="65">3</text>
+    </g>
+    <g font-size="16" fill="#63757F">
+      <text x="328" y="365">J = 0.5</text>
+      <text x="410" y="365">J = 2</text>
+      <text x="470" y="350">J = 4.5</text>
+    </g>
+
+    <circle cx="240" cy="375" r="7" fill="#B55224" stroke="#FFFFFF" stroke-width="2"/>
+    <text x="205" y="405" font-size="18" fill="#8C421F">最小点 c = (1, −0.5)</text>
+    <circle cx="420" cy="195" r="7" fill="#172B3A" stroke="#FFFFFF" stroke-width="2"/>
+    <text x="433" y="185" font-size="19" font-weight="700">θ = (3, 1.5)</text>
+    <circle cx="375" cy="240" r="7" fill="#1F648C" stroke="#FFFFFF" stroke-width="2"/>
+    <text x="383" y="266" font-size="18" fill="#1F648C">θ⁺ = (2.5, 1.0)</text>
+
+    <line x1="420" y1="195" x2="510" y2="105" stroke="#4C5F6A" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#dark-arrow)"/>
+    <text x="465" y="119" font-size="17" fill="#4C5F6A">+g 方向（0.5g）</text>
+    <line x1="420" y1="195" x2="240" y2="375" stroke="#B55224" stroke-width="3" stroke-dasharray="10 7" marker-end="url(#orange-arrow)"/>
+    <text x="286" y="270" font-size="19" fill="#8C421F">−g = (−2, −2)</text>
+    <line x1="420" y1="195" x2="375" y2="240" stroke="#1F648C" stroke-width="5" marker-end="url(#blue-arrow)"/>
+    <text x="427" y="224" font-size="18" fill="#1F648C">−ηg</text>
+
+    <rect x="650" y="85" width="510" height="485" rx="14" fill="#FBF8F3" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="905" y="132" text-anchor="middle" font-size="24" font-weight="700">在 θ 处核对一步更新</text>
+    <text x="700" y="185" font-size="22">g = ∇J(θ) = (2, 2)</text>
+    <text x="700" y="230" font-size="22">J(θ) = 4，η = 0.25</text>
+    <line x1="700" y1="255" x2="1110" y2="255" stroke="#C4CDD2" stroke-width="2"/>
+    <text x="700" y="305" font-size="23">θ⁺ = θ − ηg</text>
+    <text x="700" y="350" font-size="23">= (3, 1.5) − 0.25(2, 2)</text>
+    <text x="700" y="395" font-size="23">= (2.5, 1.0)</text>
+    <text x="700" y="445" font-size="23">J(θ⁺) = 2.25</text>
+    <text x="700" y="495" font-size="19" fill="#4C5F6A">负梯度给出方向，学习率决定步长；</text>
+    <text x="700" y="528" font-size="19" fill="#4C5F6A">蓝色箭头才是本例实际走的一步。</text>
+    <text x="600" y="625" text-anchor="middle" font-size="19" fill="#4C5F6A">等高线：J = 0.5、2、4.5；箭头与数值使用同一坐标映射</text>
+  </g>
+</svg>

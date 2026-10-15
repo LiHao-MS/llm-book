@@ -11,7 +11,8 @@ $link-hover-decoration: underline;
   max-width: 48rem;
 }
 
-.content p a {
+.content p a,
+.content li a.quarto-xref {
   text-decoration: underline;
 }
 
@@ -323,6 +324,105 @@ llm-matrix-transformer {
 
 @media (max-width: 36rem) {
   .interactive-select-control {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+llm-optimizer-trajectory,
+llm-lr-schedule {
+  display: block;
+}
+
+.optimizer-controls {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.interactive-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.interactive-actions button {
+  min-block-size: 2.5rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #8b969c;
+  border-radius: 0.25rem;
+  background: #ffffff;
+  color: #172b3a;
+  font: inherit;
+  cursor: pointer;
+}
+
+.interactive-actions button:focus-visible {
+  outline: 3px solid #8c421f;
+  outline-offset: 3px;
+}
+
+.interactive-actions button:disabled {
+  color: #5e6a70;
+  cursor: not-allowed;
+}
+
+.optimizer-contour {
+  fill: none;
+  stroke: #71818a;
+  stroke-width: 1.5;
+}
+
+.optimizer-full-trajectory {
+  fill: none;
+  stroke: #4f7487;
+  stroke-dasharray: 6 5;
+  stroke-width: 2;
+}
+
+.optimizer-trajectory {
+  fill: none;
+  stroke: #1f648c;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+.optimizer-current-point,
+.lr-current-point,
+.clip-clipped-point {
+  fill: #c65d21;
+}
+
+.lr-schedule-path {
+  fill: none;
+  stroke: #1f648c;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+.lr-warmup-marker {
+  fill: none;
+  stroke: #8b969c;
+  stroke-dasharray: 5 4;
+}
+
+.clip-original-gradient,
+.clip-clipped-gradient {
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.clip-original-gradient {
+  stroke: #5e6a70;
+  stroke-dasharray: 6 4;
+}
+
+.clip-clipped-gradient {
+  stroke: #c65d21;
+  stroke-width: 5;
+}
+
+@media (max-width: 36rem) {
+  .optimizer-controls {
     grid-template-columns: minmax(0, 1fr);
   }
 }

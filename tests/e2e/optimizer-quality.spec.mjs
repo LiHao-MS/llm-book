@@ -1,0 +1,192 @@
+import AxeBuilder from '@axe-core/playwright';
+import { expect, test } from '@playwright/test';
+
+const homePath = '/llm-book/index.html';
+const chapterPath = '/llm-book/optimization.html';
+const localOrigin = 'http://127.0.0.1:4173';
+const mountPath = '/llm-book/';
+
+async function openPage(page, path) {
+  await page.goto(path, { waitUntil: 'networkidle' });
+}
+
+function axeSummary(violations) {
+  return violations.map((violation) => ({
+    id: violation.id,
+    impact: violation.impact,
+    help: violation.help,
+    nodes: violation.nodes.map((node) => ({
+      target: node.target,
+      html: node.html,
+      failureSummary: node.failureSummary,
+    })),
+  }));
+}
+
+test('优化章通过 WCAG 2.1 AA axe 扫描', async ({ page }) => {
+  await openPage(page, chapterPath);
+  const results = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+    .analyze();
+
+  expect(results.violations, JSON.stringify(axeSummary(results.violations), null, 2)).toEqual([]);
+});
+
+test('优化章在 390×844 视口无页面或长公式横向裁切', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openPage(page, chapterPath);
+
+  const dimensions = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+    formulaOverflow: [...document.querySelectorAll('mjx-container[display="true"]')]
+      .map((node, index) => ({
+        index,
+        text: node.textContent,
+        clientWidth: node.clientWidth,
+        scrollWidth: node.scrollWidth,
+      }))
+      .filter(({ scrollWidth, clientWidth }) => scrollWidth > clientWidth + 1),
+  }));
+
+  expect(
+    dimensions.scrollWidth,
+    `页面宽度 ${JSON.stringify(dimensions)}`,
+  ).toBeLessThanOrEqual(dimensions.clientWidth);
+  expect(
+    dimensions.formulaOverflow,
+    `以下公式被横向裁切：${JSON.stringify(dimensions.formulaOverflow)}`,
+  ).toEqual([]);
+});
+
+test('核心公式在拒绝所有跨源请求时仍由本地 MathJax SVG 完整渲染', async ({ page }) => {
+  const offOriginRequests = [];
+  await page.route('**/*', async (route) => {
+    const url = new URL(route.request().url());
+    if (['http:', 'https:'].includes(url.protocol) && url.origin !== localOrigin) {
+      offOriginRequests.push(url.href);
+      await route.abort('blockedbyclient');
+      return;
+    }
+    await route.continue();
+  });
+
+  await openPage(page, chapterPath);
+  expect(offOriginRequests, `发现跨源运行时请求：${offOriginRequests.join(', ')}`).toEqual([]);
+
+  const formulas = page.locator('mjx-container[jax="SVG"]');
+  await expect(formulas.first()).toBeVisible();
+  expect(await formulas.count()).toBeGreaterThan(20);
+  const invalidFormulas = await formulas.evaluateAll((nodes) =>
+    nodes.flatMap((node, index) => {
+      const svg = node.querySelector('svg');
+      if (!svg) {
+        return [{ index, text: node.textContent, reason: 'missing SVG' }];
+      }
+      const bounds = svg.getBoundingClientRect();
+      return bounds.width > 0 && bounds.height > 0
+        ? []
+        : [{ index, text: node.textContent, width: bounds.width, height: bounds.height }];
+    }),
+  );
+  expect(invalidFormulas, `未完整渲染的公式：${JSON.stringify(invalidFormulas)}`).toEqual([]);
+});
+
+test('优化章的全部站内链接、锚点及 PDF 均有效', async ({ page, request }) => {
+  test.setTimeout(120_000);
+  await openPage(page, chapterPath);
+  const hrefs = await page.locator('a[href]').evaluateAll((links) =>
+    links.map((link) => link.href),
+  );
+  const targets = new Map();
+  for (const href of hrefs) {
+    const url = new URL(href);
+    if (url.origin === localOrigin && url.pathname.startsWith(mountPath)) {
+      targets.set(url.href, url);
+    }
+  }
+
+  const targetPaths = [...targets.values()].map((url) => url.pathname);
+  expect(targetPaths).toEqual(expect.arrayContaining([
+    mountPath,
+    '/llm-book/softmax-cross-entropy.html',
+    '/llm-book/embedding-geometry.html',
+    chapterPath,
+  ]));
+  expect(targetPaths.some((path) => path.endsWith('.pdf'))).toBe(true);
+
+  const failures = [];
+  for (const url of targets.values()) {
+    const resourceUrl = new URL(url);
+    resourceUrl.hash = '';
+    const response = await request.get(resourceUrl.href);
+    if (response.status() !== 200) {
+      failures.push(`${response.status()} ${url.href}`);
+      continue;
+    }
+
+    if (url.hash) {
+      await page.goto(url.href, { waitUntil: 'domcontentloaded' });
+      const id = decodeURIComponent(url.hash.slice(1));
+      const targetExists = await page.evaluate(
+        (targetId) => Boolean(document.getElementById(targetId) || document.getElementsByName(targetId).length),
+        id,
+      );
+      if (!targetExists) {
+        failures.push(`缺少锚点目标 ${url.href}`);
+      }
+    }
+  }
+
+  expect(failures).toEqual([]);
+});
+
+test.describe('优化章禁用 JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  test('显示两幅交互后备图和损失曲面静态图', async ({ page }) => {
+    await openPage(page, chapterPath);
+    const fallbacks = [
+      {
+        anchor: 'fig-optimizer-trajectory',
+        src: 'assets/figures/optimizer-trajectory.svg',
+        alternative: /优化器轨迹对比图/,
+      },
+      {
+        anchor: 'fig-lr-schedule',
+        src: 'assets/figures/lr-schedule.svg',
+        alternative: /学习率与梯度裁剪教学图/,
+      },
+    ];
+
+    for (const { anchor, src, alternative } of fallbacks) {
+      const image = page.locator(`noscript img[src="${src}"]`);
+      await expect(image).toBeVisible();
+      await expect(image).toHaveAttribute('alt', alternative);
+      await expect(page.locator(`#${anchor}`)).toBeVisible();
+    }
+    await expect(page.locator('img[src="assets/figures/loss-surface.svg"]')).toBeVisible();
+    await expect(page.getByTestId('optimizer-algorithm')).toHaveCount(0);
+    await expect(page.getByTestId('clip-threshold')).toHaveCount(0);
+  });
+});
+
+for (const query of ['优化', '梯度裁剪', 'AdamW']) {
+  test(`搜索“${query}”返回优化章`, async ({ page }) => {
+    await openPage(page, homePath);
+    const input = page.locator('#quarto-search .aa-Input');
+    await expect(input).toBeVisible();
+    await input.fill(query);
+    const results = page.locator('#quarto-search-results a.search-result-link');
+
+    await expect
+      .poll(async () => results.evaluateAll(
+        (links, expected) => links.some((link) => {
+          const url = new URL(link.href);
+          return url.pathname === expected.path && link.textContent.includes(expected.title);
+        }),
+        { path: chapterPath, title: '优化：从经验风险到 AdamW' },
+      ), { message: `搜索结果应包含优化章（${chapterPath}）` })
+      .toBe(true);
+  });
+}
