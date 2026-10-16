@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 770" role="img" aria-labelledby="title desc">
+  <title id="title">PPO 截断目标：正负优势下的三项曲线</title>
+  <desc id="desc">PPO 截断目标静态曲线，同时展示未截断项、截断项和二者 min。ε=0.2 时，正优势例 ρ=1.4、A=1 的目标为 1.2；负优势例 ρ=0.6、A=-1 的目标为 -0.8。clip 只定义代理目标，不是参数硬约束。</desc>
+  <rect width="1200" height="770" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="42" text-anchor="middle" font-size="30" font-weight="700">PPO：截断项与 min 如何随优势符号变化</text>
+
+    <rect x="40" y="80" width="540" height="590" rx="14" fill="#F8FAFB" stroke="#8A9AA5" stroke-width="2"/>
+    <rect x="620" y="80" width="540" height="590" rx="14" fill="#FBF8F3" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="310" y="122" text-anchor="middle" font-size="23" font-weight="700">正优势：A = 1</text>
+    <text x="890" y="122" text-anchor="middle" font-size="23" font-weight="700">负优势：A = −1</text>
+    <text x="310" y="149" text-anchor="middle" font-size="16" fill="#4C5F6A">当前 ρ = 1.4，ε = 0.2</text>
+    <text x="890" y="149" text-anchor="middle" font-size="16" fill="#4C5F6A">当前 ρ = 0.6，ε = 0.2</text>
+
+    <g stroke="#DDE3E7" stroke-width="1.2">
+      <path d="M100 170H500 M100 240H500 M100 310H500 M100 380H500 M200 170V450 M300 170V450 M400 170V450"/>
+      <path d="M680 170H1080 M680 240H1080 M680 310H1080 M680 380H1080 M780 170V450 M880 170V450 M980 170V450"/>
+    </g>
+    <g stroke="#172B3A" stroke-width="1.8">
+      <path d="M100 170V450H500 M680 170V450H1080"/>
+    </g>
+    <g stroke="#5E6A70" stroke-width="1.4">
+      <path d="M100 310H500 M680 310H1080"/>
+    </g>
+    <g font-size="14" fill="#4C5F6A" text-anchor="middle">
+      <text x="100" y="475">0</text><text x="200" y="475">0.5</text><text x="300" y="475">1</text><text x="400" y="475">1.5</text><text x="500" y="475">2</text>
+      <text x="680" y="475">0</text><text x="780" y="475">0.5</text><text x="880" y="475">1</text><text x="980" y="475">1.5</text><text x="1080" y="475">2</text>
+    </g>
+    <g font-size="14" fill="#4C5F6A" text-anchor="end">
+      <text x="90" y="175">2</text><text x="90" y="245">1</text><text x="90" y="315">0</text><text x="90" y="385">−1</text><text x="90" y="455">−2</text>
+      <text x="670" y="175">2</text><text x="670" y="245">1</text><text x="670" y="315">0</text><text x="670" y="385">−1</text><text x="670" y="455">−2</text>
+    </g>
+    <text x="300" y="505" text-anchor="middle" font-size="17">概率比 ρ</text>
+    <text x="880" y="505" text-anchor="middle" font-size="17">概率比 ρ</text>
+
+    <g stroke="#71558A" stroke-width="2" stroke-dasharray="8 6">
+      <path d="M260 170V450 M340 170V450 M840 170V450 M920 170V450"/>
+    </g>
+    <g stroke="#8A9AA5" stroke-width="1.5" stroke-dasharray="3 5">
+      <path d="M380 170V450 M800 170V450"/>
+    </g>
+
+    <path d="M100 310 L500 170" fill="none" stroke="#1F648C" stroke-width="4" stroke-linecap="round"/>
+    <path d="M100 254 L260 254 L340 226 L500 226" fill="none" stroke="#B55224" stroke-width="4" stroke-dasharray="14 7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M100 310 L340 226 L500 226" fill="none" stroke="#39704A" stroke-width="4" stroke-dasharray="3 6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="380" cy="212" r="7" fill="#1F648C" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="380" cy="226" r="7" fill="#B55224" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="380" cy="226" r="4" fill="#39704A" stroke="#FFFFFF" stroke-width="2"/>
+
+    <path d="M680 310 L1080 450" fill="none" stroke="#1F648C" stroke-width="4" stroke-linecap="round"/>
+    <path d="M680 366 L840 366 L920 394 L1080 394" fill="none" stroke="#B55224" stroke-width="4" stroke-dasharray="14 7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M680 366 L840 366 L1080 450" fill="none" stroke="#39704A" stroke-width="4" stroke-dasharray="3 6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="800" cy="352" r="7" fill="#1F648C" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="800" cy="366" r="7" fill="#B55224" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="800" cy="366" r="4" fill="#39704A" stroke="#FFFFFF" stroke-width="2"/>
+
+    <g font-size="18">
+      <text x="85" y="546">未截断项 ρA = 1.4</text>
+      <text x="85" y="581">截断比率 = 1.2</text>
+      <text x="85" y="616">截断项 clip(ρ)A = 1.2</text>
+      <text x="85" y="651" font-weight="700" fill="#39704A">min 目标 = 1.2</text>
+      <text x="665" y="546">未截断项 ρA = -0.6</text>
+      <text x="665" y="581">截断比率 = 0.8</text>
+      <text x="665" y="616">截断项 clip(ρ)A = -0.8</text>
+      <text x="665" y="651" font-weight="700" fill="#39704A">min 目标 = -0.8</text>
+    </g>
+
+    <g font-size="16">
+      <line x1="95" y1="706" x2="140" y2="706" stroke="#1F648C" stroke-width="4"/>
+      <text x="152" y="712">未截断项</text>
+      <line x1="365" y1="706" x2="410" y2="706" stroke="#B55224" stroke-width="4" stroke-dasharray="14 7"/>
+      <text x="422" y="712">截断项</text>
+      <line x1="635" y1="706" x2="680" y2="706" stroke="#39704A" stroke-width="4" stroke-dasharray="3 6"/>
+      <text x="692" y="712">min 目标</text>
+      <line x1="905" y1="706" x2="950" y2="706" stroke="#71558A" stroke-width="3" stroke-dasharray="8 6"/>
+      <text x="962" y="712">1±ε</text>
+    </g>
+    <text x="600" y="751" text-anchor="middle" font-size="17" fill="#4C5F6A">圆点为当前例；clip 只作用于代理目标，不是参数或概率比的硬约束</text>
+  </g>
+</svg>

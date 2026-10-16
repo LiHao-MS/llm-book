@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">投机解码：草稿提出，目标验证</title>
+  <desc id="desc">固定三 Token 分布算例。目标分布 p 为 [0.5, 0.3, 0.2]，草稿分布 q 为 [0.4, 0.4, 0.2]，逐 Token 接受率为 [1, 0.75, 1]，总接受率为 0.9，拒绝后归一化残差为 [1, 0, 0]。接受—修正保持目标分布并减少严格串行步数，不是测试时搜索。</desc>
+  <defs>
+    <style>
+      .panel { fill: #F8FAFB; stroke: #8A9AA5; stroke-width: 2; }
+      .track { fill: #EEF1F2; }
+      .target { fill: #1F648C; }
+      .draft { fill: #C65D21; }
+      .title { fill: #172B3A; font-size: 28px; font-weight: 700; }
+      .heading { fill: #172B3A; font-size: 19px; font-weight: 700; }
+      .label { fill: #172B3A; font-size: 16px; }
+      .small { fill: #4C5F6A; font-size: 14px; }
+      .number { fill: #8C421F; font-size: 17px; font-weight: 700; }
+    </style>
+  </defs>
+  <rect width="1200" height="700" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <text x="600" y="42" text-anchor="middle" class="title">投机解码：草稿提出，目标验证</text>
+    <text x="600" y="72" text-anchor="middle" class="small">接受—修正保持目标分布，减少严格串行步数；不是测试时搜索</text>
+
+    <rect class="panel" x="30" y="100" width="1140" height="390" rx="14"/>
+    <text x="70" y="132" class="heading">Token</text>
+    <rect class="target" x="250" y="116" width="18" height="18" rx="3"/>
+    <text x="278" y="132" class="label">目标 p</text>
+    <rect class="draft" x="380" y="116" width="18" height="18" rx="3"/>
+    <text x="408" y="132" class="label">草稿 q</text>
+    <text x="1010" y="132" class="heading">接受率 a / 残差 r</text>
+
+    <text x="70" y="205" class="heading">A</text>
+    <rect class="track" x="250" y="160" width="600" height="26" rx="4"/>
+    <rect class="target" x="250" y="160" width="300" height="26" rx="4"/>
+    <text x="870" y="179" class="label">p = 0.5</text>
+    <text x="1010" y="179" class="number">a = 1</text>
+    <rect class="track" x="250" y="200" width="600" height="26" rx="4"/>
+    <rect class="draft" x="250" y="200" width="240" height="26" rx="4"/>
+    <text x="870" y="219" class="label">q = 0.4</text>
+    <text x="1010" y="219" class="number">r = 1</text>
+
+    <text x="70" y="305" class="heading">B</text>
+    <rect class="track" x="250" y="260" width="600" height="26" rx="4"/>
+    <rect class="target" x="250" y="260" width="180" height="26" rx="4"/>
+    <text x="870" y="279" class="label">p = 0.3</text>
+    <text x="1010" y="279" class="number">a = 0.75</text>
+    <rect class="track" x="250" y="300" width="600" height="26" rx="4"/>
+    <rect class="draft" x="250" y="300" width="240" height="26" rx="4"/>
+    <text x="870" y="319" class="label">q = 0.4</text>
+    <text x="1010" y="319" class="number">r = 0</text>
+
+    <text x="70" y="405" class="heading">C</text>
+    <rect class="track" x="250" y="360" width="600" height="26" rx="4"/>
+    <rect class="target" x="250" y="360" width="120" height="26" rx="4"/>
+    <text x="870" y="379" class="label">p = 0.2</text>
+    <text x="1010" y="379" class="number">a = 1</text>
+    <rect class="track" x="250" y="400" width="600" height="26" rx="4"/>
+    <rect class="draft" x="250" y="400" width="120" height="26" rx="4"/>
+    <text x="870" y="419" class="label">q = 0.2</text>
+    <text x="1010" y="419" class="number">r = 0</text>
+
+    <rect class="panel" x="30" y="515" width="1140" height="155" rx="14"/>
+    <text x="65" y="552" class="number">总接受率 = Σ min(pᵢ, qᵢ) = 0.9</text>
+    <text x="65" y="588" class="label">拒绝后归一化残差 r = [1, 0, 0]；只有 A 的目标质量高于草稿质量。</text>
+    <text x="65" y="624" class="small">边界：qᵢ = 0 时逐 Token 接受率为 null 且总接受率贡献 0；p = q 时总接受率为 1、残差为 null。</text>
+    <text x="65" y="652" class="small">该机制不枚举或搜索多个答案；收益还需用真实草稿、验证成本和接受长度分布复测。</text>
+  </g>
+</svg>

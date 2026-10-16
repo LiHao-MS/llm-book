@@ -12,10 +12,13 @@ const chapters = [
   'attention',
   'transformer-architecture',
   'pretraining-scaling',
+  'distributed-training',
   'inference-systems',
   'rl-foundations',
   'rlhf-alignment',
   'frontier-rl',
+  'retrieval-rag',
+  'multimodal-models',
 ];
 const embeddedNavigationPattern = /<link\b(?=[^>]*\brel="(?:prev|next)")(?=[^>]*\bhref="data:text\/html,)[^>]*>/g;
 

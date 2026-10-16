@@ -20,10 +20,13 @@ book:
     - attention.qmd
     - transformer-architecture.qmd
     - pretraining-scaling.qmd
+    - distributed-training.qmd
     - inference-systems.qmd
     - rl-foundations.qmd
     - rlhf-alignment.qmd
     - frontier-rl.qmd
+    - retrieval-rag.qmd
+    - multimodal-models.qmd
 
 lang: zh-CN
 bibliography: references.bib

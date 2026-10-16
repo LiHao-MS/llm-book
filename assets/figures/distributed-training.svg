@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1070" role="img" aria-labelledby="title desc">
+  <title id="title">分布式训练的数据、张量、层与状态切分，以及四阶段流水线时间线</title>
+  <desc id="desc">同一 12 层、10 亿参数玩具模型。DP 切样本并在 ZeRO-0 复制状态，TP 在层内切矩阵，PP 按层切阶段，ZeRO 在 DP 组内切状态。DP=8、TP=PP=1、ZeRO-0 时每设备权重 2 GB、梯度 2 GB、优化器 12 GB、合计 16 GB；DP=TP=PP=2、ZeRO-3 时分别为 0.25、0.25、1.5、合计 2 GB。底部四阶段四 microbatch 的 GPipe 式时间线共 14 个等长单位，每阶段前向 4 格、反向 4 格、空白 6 格，理想气泡比例为 3/7；不表示真实吞吐。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#4C5F6A"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#1F648C"/>
+    </marker>
+    <style>
+      .panel { fill: #F8FAFB; stroke: #8A9AA5; stroke-width: 2; }
+      .box { fill: #FFFFFF; stroke: #8A9AA5; stroke-width: 1.5; }
+      .arrow { fill: none; stroke: #4C5F6A; stroke-width: 2; marker-end: url(#arrow); }
+      .forward { fill: #1F648C; }
+      .backward { fill: #B55224; }
+      .bubble { fill: #EEF1F2; }
+      .cell { stroke: #FFFFFF; stroke-width: 1; }
+      .cell-label { fill: #FFFFFF; font-size: 14px; text-anchor: middle; }
+      .small { fill: #4C5F6A; font-size: 15px; }
+      .label { fill: #172B3A; font-size: 16px; }
+    </style>
+  </defs>
+  <rect width="1200" height="1070" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="38" text-anchor="middle" font-size="28" font-weight="700">分布式训练：四种切分与流水线时间线</text>
+    <text x="600" y="65" text-anchor="middle" font-size="16" fill="#4C5F6A">同一玩具模型：N = 10 亿，L = 12；显存均为十进制 GB / 设备</text>
+
+    <rect class="panel" x="30" y="90" width="370" height="300" rx="14"/>
+    <text x="215" y="124" text-anchor="middle" font-size="19" font-weight="700">DP：切数据；ZeRO-0 复制状态</text>
+    <text x="215" y="154" text-anchor="middle" class="small">mini-batch 分成 B₁ 与 B₂</text>
+    <path class="arrow" d="M215 165 L125 188"/>
+    <path class="arrow" d="M215 165 L305 188"/>
+    <rect class="box" x="60" y="190" width="130" height="66" rx="8"/>
+    <rect class="box" x="240" y="190" width="130" height="66" rx="8"/>
+    <text x="125" y="217" text-anchor="middle" class="label">GPU 0：12 层</text>
+    <text x="125" y="241" text-anchor="middle" class="small">读取 B₁</text>
+    <text x="305" y="217" text-anchor="middle" class="label">GPU 1：12 层</text>
+    <text x="305" y="241" text-anchor="middle" class="small">读取 B₂</text>
+    <path d="M125 275 H305" stroke="#1F648C" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+    <path d="M305 275 H125" stroke="#1F648C" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+    <text x="215" y="305" text-anchor="middle" class="label">梯度 AllReduce</text>
+    <text x="215" y="348" text-anchor="middle" class="small">8 路 DP 仍是每设备 16 GB</text>
+
+    <rect class="panel" x="415" y="90" width="370" height="300" rx="14"/>
+    <text x="600" y="124" text-anchor="middle" font-size="19" font-weight="700">TP：在同一层内切张量</text>
+    <text x="600" y="154" text-anchor="middle" class="small">同一 microbatch X，W = [W₁ W₂]</text>
+    <rect class="box" x="450" y="190" width="130" height="66" rx="8"/>
+    <rect class="box" x="620" y="190" width="130" height="66" rx="8"/>
+    <text x="515" y="217" text-anchor="middle" class="label">GPU 0：W₁</text>
+    <text x="515" y="241" text-anchor="middle" class="small">计算 Y₁ = XW₁</text>
+    <text x="685" y="217" text-anchor="middle" class="label">GPU 1：W₂</text>
+    <text x="685" y="241" text-anchor="middle" class="small">计算 Y₂ = XW₂</text>
+    <path d="M515 275 H685" stroke="#1F648C" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+    <path d="M685 275 H515" stroke="#1F648C" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+    <text x="600" y="305" text-anchor="middle" class="label">层内激活集合通信</text>
+    <text x="600" y="348" text-anchor="middle" class="small">切层内参数与计算，不切样本</text>
+
+    <rect class="panel" x="800" y="90" width="370" height="300" rx="14"/>
+    <text x="985" y="124" text-anchor="middle" font-size="19" font-weight="700">PP：按层切阶段</text>
+    <text x="985" y="154" text-anchor="middle" class="small">microbatch 依次通过 4 个阶段</text>
+    <rect class="box" x="820" y="190" width="70" height="72" rx="7"/>
+    <rect class="box" x="905" y="190" width="70" height="72" rx="7"/>
+    <rect class="box" x="990" y="190" width="70" height="72" rx="7"/>
+    <rect class="box" x="1075" y="190" width="70" height="72" rx="7"/>
+    <text x="855" y="217" text-anchor="middle" class="label">S1</text>
+    <text x="855" y="242" text-anchor="middle" class="small">L1–L3</text>
+    <text x="940" y="217" text-anchor="middle" class="label">S2</text>
+    <text x="940" y="242" text-anchor="middle" class="small">L4–L6</text>
+    <text x="1025" y="217" text-anchor="middle" class="label">S3</text>
+    <text x="1025" y="242" text-anchor="middle" class="small">L7–L9</text>
+    <text x="1110" y="217" text-anchor="middle" class="label">S4</text>
+    <text x="1110" y="242" text-anchor="middle" class="small">L10–12</text>
+    <path class="arrow" d="M890 226 H901"/><path class="arrow" d="M975 226 H986"/><path class="arrow" d="M1060 226 H1071"/>
+    <path d="M1145 285 H820" stroke="#B55224" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="985" y="313" text-anchor="middle" class="label">前向激活 →；← 反向梯度</text>
+    <text x="985" y="348" text-anchor="middle" class="small">PP=4 每阶段 3 层；PP=5 非均匀</text>
+
+    <rect class="panel" x="30" y="415" width="1140" height="155" rx="14" fill="#FBF8F3"/>
+    <text x="600" y="447" text-anchor="middle" font-size="20" font-weight="700">静态状态账：2N（权重）+ 2N（梯度）+ 12N（优化器）</text>
+    <text x="60" y="486" class="label">DP=8，TP=PP=1，ZeRO-0</text>
+    <text x="690" y="486" class="label" font-weight="700">2 + 2 + 12 = 16 GB / 设备</text>
+    <text x="60" y="524" class="label">DP=TP=PP=2，ZeRO-3</text>
+    <text x="690" y="524" class="label" font-weight="700">0.25 + 0.25 + 1.5 = 2 GB / 设备</text>
+    <text x="600" y="553" text-anchor="middle" class="small">不含激活、通信 bucket、临时缓冲区与碎片；1 GB = 10⁹ 字节</text>
+
+    <rect class="panel" x="30" y="590" width="1140" height="450" rx="14"/>
+    <text x="600" y="625" text-anchor="middle" font-size="21" font-weight="700">GPipe 式概念时间线：4 阶段 × 4 microbatch</text>
+    <text x="600" y="652" text-anchor="middle" class="small">先全部前向再反向；等长格仅表示依赖，空白为气泡，不模拟真实吞吐</text>
+
+    <g font-size="12" fill="#4C5F6A" text-anchor="middle">
+      <text x="240" y="691">t1</text><text x="305" y="691">t2</text><text x="370" y="691">t3</text>
+      <text x="435" y="691">t4</text><text x="500" y="691">t5</text><text x="565" y="691">t6</text>
+      <text x="630" y="691">t7</text><text x="695" y="691">t8</text><text x="760" y="691">t9</text>
+      <text x="825" y="691">t10</text><text x="890" y="691">t11</text><text x="955" y="691">t12</text>
+      <text x="1020" y="691">t13</text><text x="1085" y="691">t14</text>
+    </g>
+
+    <text x="55" y="740" class="label">阶段 1：L1–L3</text>
+    <g>
+      <rect class="cell forward" x="210" y="710" width="60" height="44" rx="4"/><rect class="cell forward" x="275" y="710" width="60" height="44" rx="4"/>
+      <rect class="cell forward" x="340" y="710" width="60" height="44" rx="4"/><rect class="cell forward" x="405" y="710" width="60" height="44" rx="4"/>
+      <rect class="cell bubble" x="470" y="710" width="60" height="44" rx="4"/><rect class="cell bubble" x="535" y="710" width="60" height="44" rx="4"/>
+      <rect class="cell bubble" x="600" y="710" width="60" height="44" rx="4"/><rect class="cell bubble" x="665" y="710" width="60" height="44" rx="4"/>
+      <rect class="cell bubble" x="730" y="710" width="60" height="44" rx="4"/><rect class="cell bubble" x="795" y="710" width="60" height="44" rx="4"/>
+      <rect class="cell backward" x="860" y="710" width="60" height="44" rx="4"/><rect class="cell backward" x="925" y="710" width="60" height="44" rx="4"/>
+      <rect class="cell backward" x="990" y="710" width="60" height="44" rx="4"/><rect class="cell backward" x="1055" y="710" width="60" height="44" rx="4"/>
+      <text class="cell-label" x="240" y="738">F1</text><text class="cell-label" x="305" y="738">F2</text><text class="cell-label" x="370" y="738">F3</text><text class="cell-label" x="435" y="738">F4</text>
+      <text class="cell-label" x="890" y="738">B4</text><text class="cell-label" x="955" y="738">B3</text><text class="cell-label" x="1020" y="738">B2</text><text class="cell-label" x="1085" y="738">B1</text>
+    </g>
+
+    <text x="55" y="805" class="label">阶段 2：L4–L6</text>
+    <g>
+      <rect class="cell bubble" x="210" y="775" width="60" height="44" rx="4"/><rect class="cell forward" x="275" y="775" width="60" height="44" rx="4"/>
+      <rect class="cell forward" x="340" y="775" width="60" height="44" rx="4"/><rect class="cell forward" x="405" y="775" width="60" height="44" rx="4"/>
+      <rect class="cell forward" x="470" y="775" width="60" height="44" rx="4"/><rect class="cell bubble" x="535" y="775" width="60" height="44" rx="4"/>
+      <rect class="cell bubble" x="600" y="775" width="60" height="44" rx="4"/><rect class="cell bubble" x="665" y="775" width="60" height="44" rx="4"/>
+      <rect class="cell bubble" x="730" y="775" width="60" height="44" rx="4"/><rect class="cell backward" x="795" y="775" width="60" height="44" rx="4"/>
+      <rect class="cell backward" x="860" y="775" width="60" height="44" rx="4"/><rect class="cell backward" x="925" y="775" width="60" height="44" rx="4"/>
+      <rect class="cell backward" x="990" y="775" width="60" height="44" rx="4"/><rect class="cell bubble" x="1055" y="775" width="60" height="44" rx="4"/>
+      <text class="cell-label" x="305" y="803">F1</text><text class="cell-label" x="370" y="803">F2</text><text class="cell-label" x="435" y="803">F3</text><text class="cell-label" x="500" y="803">F4</text>
+      <text class="cell-label" x="825" y="803">B4</text><text class="cell-label" x="890" y="803">B3</text><text class="cell-label" x="955" y="803">B2</text><text class="cell-label" x="1020" y="803">B1</text>
+    </g>
+
+    <text x="55" y="870" class="label">阶段 3：L7–L9</text>
+    <g>
+      <rect class="cell bubble" x="210" y="840" width="60" height="44" rx="4"/><rect class="cell bubble" x="275" y="840" width="60" height="44" rx="4"/>
+      <rect class="cell forward" x="340" y="840" width="60" height="44" rx="4"/><rect class="cell forward" x="405" y="840" width="60" height="44" rx="4"/>
+      <rect class="cell forward" x="470" y="840" width="60" height="44" rx="4"/><rect class="cell forward" x="535" y="840" width="60" height="44" rx="4"/>
+      <rect class="cell bubble" x="600" y="840" width="60" height="44" rx="4"/><rect class="cell bubble" x="665" y="840" width="60" height="44" rx="4"/>
+      <rect class="cell backward" x="730" y="840" width="60" height="44" rx="4"/><rect class="cell backward" x="795" y="840" width="60" height="44" rx="4"/>
+      <rect class="cell backward" x="860" y="840" width="60" height="44" rx="4"/><rect class="cell backward" x="925" y="840" width="60" height="44" rx="4"/>
+      <rect class="cell bubble" x="990" y="840" width="60" height="44" rx="4"/><rect class="cell bubble" x="1055" y="840" width="60" height="44" rx="4"/>
+      <text class="cell-label" x="370" y="868">F1</text><text class="cell-label" x="435" y="868">F2</text><text class="cell-label" x="500" y="868">F3</text><text class="cell-label" x="565" y="868">F4</text>
+      <text class="cell-label" x="760" y="868">B4</text><text class="cell-label" x="825" y="868">B3</text><text class="cell-label" x="890" y="868">B2</text><text class="cell-label" x="955" y="868">B1</text>
+    </g>
+
+    <text x="55" y="935" class="label">阶段 4：L10–L12</text>
+    <g>
+      <rect class="cell bubble" x="210" y="905" width="60" height="44" rx="4"/><rect class="cell bubble" x="275" y="905" width="60" height="44" rx="4"/>
+      <rect class="cell bubble" x="340" y="905" width="60" height="44" rx="4"/><rect class="cell forward" x="405" y="905" width="60" height="44" rx="4"/>
+      <rect class="cell forward" x="470" y="905" width="60" height="44" rx="4"/><rect class="cell forward" x="535" y="905" width="60" height="44" rx="4"/>
+      <rect class="cell forward" x="600" y="905" width="60" height="44" rx="4"/><rect class="cell backward" x="665" y="905" width="60" height="44" rx="4"/>
+      <rect class="cell backward" x="730" y="905" width="60" height="44" rx="4"/><rect class="cell backward" x="795" y="905" width="60" height="44" rx="4"/>
+      <rect class="cell backward" x="860" y="905" width="60" height="44" rx="4"/><rect class="cell bubble" x="925" y="905" width="60" height="44" rx="4"/>
+      <rect class="cell bubble" x="990" y="905" width="60" height="44" rx="4"/><rect class="cell bubble" x="1055" y="905" width="60" height="44" rx="4"/>
+      <text class="cell-label" x="435" y="933">F1</text><text class="cell-label" x="500" y="933">F2</text><text class="cell-label" x="565" y="933">F3</text><text class="cell-label" x="630" y="933">F4</text>
+      <text class="cell-label" x="695" y="933">B4</text><text class="cell-label" x="760" y="933">B3</text><text class="cell-label" x="825" y="933">B2</text><text class="cell-label" x="890" y="933">B1</text>
+    </g>
+
+    <rect class="forward" x="210" y="974" width="18" height="18" rx="3"/><text x="238" y="989" class="label">前向 F</text>
+    <rect class="backward" x="360" y="974" width="18" height="18" rx="3"/><text x="388" y="989" class="label">反向 B</text>
+    <rect class="bubble" x="510" y="974" width="18" height="18" rx="3" stroke="#DDE3E7"/><text x="538" y="989" class="label">气泡 / 等待</text>
+    <text x="600" y="1021" text-anchor="middle" class="small">理想气泡比例 = (P−1)/(m+P−1) = 3/7；增加 microbatch 可能增加在飞激活</text>
+  </g>
+</svg>

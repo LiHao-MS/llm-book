@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">检索、重排、Token 预算与带引用生成的 RAG 流程</title>
+  <desc id="desc">查询先经过 metadata filter 与精确或近似向量检索得到候选，再由可选重排器形成 Top-k，随后按排名把完整文档装入 Token 预算，最后由生成模型依据上下文回答并附来源标识。下方固定二维算例中，点积 Top-3 为 D1、D5、D3，预算 12 时跳过 6 Token 的 D5，保留 D1 与 D3 共 12 Token；余弦 Top-3 为 D2、D1、D5，保留 D2 与 D1 共 11 Token。原始分数不是概率，本图不运行真实语义模型。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#4C5F6A"/>
+    </marker>
+    <style>
+      .panel { fill: #F8FAFB; stroke: #8A9AA5; stroke-width: 2; }
+      .box { fill: #FFFFFF; stroke: #8A9AA5; stroke-width: 1.5; }
+      .arrow { fill: none; stroke: #4C5F6A; stroke-width: 2.5; marker-end: url(#arrow); }
+      .title { fill: #172B3A; font-size: 28px; font-weight: 700; }
+      .heading { fill: #172B3A; font-size: 20px; font-weight: 700; }
+      .label { fill: #172B3A; font-size: 16px; }
+      .small { fill: #4C5F6A; font-size: 14px; }
+      .number { fill: #8C421F; font-size: 16px; font-weight: 700; }
+    </style>
+  </defs>
+  <rect width="1200" height="650" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <text x="600" y="42" text-anchor="middle" class="title">RAG：候选相关不等于上下文可用</text>
+    <text x="600" y="70" text-anchor="middle" class="small">检索 → 重排 → 预算 → 生成与引用；每一步都有独立的验收对象</text>
+
+    <rect class="panel" x="30" y="100" width="250" height="230" rx="14"/>
+    <rect class="panel" x="330" y="100" width="250" height="230" rx="14"/>
+    <rect class="panel" x="630" y="100" width="250" height="230" rx="14"/>
+    <rect class="panel" x="930" y="100" width="240" height="230" rx="14"/>
+
+    <text x="155" y="134" text-anchor="middle" class="heading">1. 检索候选</text>
+    <rect class="box" x="55" y="154" width="200" height="44" rx="7"/>
+    <text x="155" y="182" text-anchor="middle" class="label">查询 + metadata filter</text>
+    <path class="arrow" d="M155 202 V218"/>
+    <rect class="box" x="55" y="224" width="200" height="44" rx="7"/>
+    <text x="155" y="252" text-anchor="middle" class="label">精确扫描或 ANN</text>
+    <text x="155" y="297" text-anchor="middle" class="small">召回池 Top-k′；分数不是概率</text>
+
+    <text x="455" y="134" text-anchor="middle" class="heading">2. 可选重排</text>
+    <rect class="box" x="355" y="154" width="200" height="44" rx="7"/>
+    <text x="455" y="182" text-anchor="middle" class="label">查询—文档联合评分</text>
+    <path class="arrow" d="M455 202 V218"/>
+    <rect class="box" x="355" y="224" width="200" height="44" rx="7"/>
+    <text x="455" y="252" text-anchor="middle" class="label">保留重排后 Top-k</text>
+    <text x="455" y="297" text-anchor="middle" class="small">更细交互换取额外计算成本</text>
+
+    <text x="755" y="134" text-anchor="middle" class="heading">3. Token 预算</text>
+    <rect class="box" x="655" y="154" width="200" height="44" rx="7"/>
+    <text x="755" y="182" text-anchor="middle" class="label">按排名扫描完整文档</text>
+    <path class="arrow" d="M755 202 V218"/>
+    <rect class="box" x="655" y="224" width="200" height="44" rx="7"/>
+    <text x="755" y="252" text-anchor="middle" class="label">放不下则跳过，不截半条</text>
+    <text x="755" y="297" text-anchor="middle" class="small">给指令、问题与输出另留预算</text>
+
+    <text x="1050" y="134" text-anchor="middle" class="heading">4. 生成与引用</text>
+    <rect class="box" x="952" y="154" width="196" height="44" rx="7"/>
+    <text x="1050" y="182" text-anchor="middle" class="label">问题 + 上下文 + 来源 ID</text>
+    <path class="arrow" d="M1050 202 V218"/>
+    <rect class="box" x="952" y="224" width="196" height="44" rx="7"/>
+    <text x="1050" y="252" text-anchor="middle" class="label">有依据回答或明确拒答</text>
+    <text x="1050" y="297" text-anchor="middle" class="small">引用仍需逐主张核对支持性</text>
+
+    <path class="arrow" d="M284 215 H320"/>
+    <path class="arrow" d="M584 215 H620"/>
+    <path class="arrow" d="M884 215 H920"/>
+
+    <rect class="panel" x="30" y="365" width="1140" height="250" rx="14"/>
+    <text x="600" y="400" text-anchor="middle" class="heading">固定二维算例：q=(1,0)，Top-3，Token 预算 12</text>
+    <text x="65" y="435" class="number">点积</text>
+    <text x="145" y="435" class="label">候选 D1(10) → D5(3) → D3(2)</text>
+    <text x="145" y="462" class="label">预算：D1=8；D5=6 跳过；D3=4 → 上下文 D1、D3，共 12 Token</text>
+
+    <text x="65" y="505" class="number">余弦</text>
+    <text x="145" y="505" class="label">候选 D2(1) → D1(0.995037) → D5(0.986394)</text>
+    <text x="145" y="532" class="label">预算：D2=3；D1=8；D5=6 跳过 → 上下文 D2、D1，共 11 Token</text>
+
+    <line x1="65" y1="552" x2="1135" y2="552" stroke="#DDE3E7" stroke-width="2"/>
+    <text x="600" y="579" text-anchor="middle" class="label">D1=[10,1]，D2=[1,0]，D3=[2,2]，D5=[3,0.5]；括号内为原始分数或 Token 账</text>
+    <text x="600" y="604" text-anchor="middle" class="small">原始分数不是概率；这是几何玩具，不运行真实语义模型，也不声称某种索引或生成器的线上收益。</text>
+  </g>
+</svg>

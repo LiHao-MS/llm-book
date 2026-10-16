@@ -262,6 +262,57 @@ $$
 
 这不是性能承诺：长输出、batch 增大或显存带宽竞争都可能改变 $t_D+t_V$，额外草稿权重和验证状态也占用资源。应使用真实请求的接受长度分布与端到端时延验证。
 
+### 分布交互：接受与拒绝修正 {#sec-speculative-distribution-demo}
+
+下面的交互固定 A、B、C 三个 Token。默认目标分布为 $p=[0.5,0.3,0.2]$、草稿分布为 $q=[0.4,0.4,0.2]$，逐 Token 接受率为 $[1,0.75,1]$，总接受率为 $\sum_i\min(p_i,q_i)=0.9$，拒绝后归一化残差为 $[1,0,0]$。另可切换 $q(B)=0$ 的草稿不可达状态与 $p=q$ 的无拒绝质量状态；前者对应接受率 `null` 且对总接受率贡献 0，后者对应残差 `null`。
+
+这里的“保持目标分布”指适当的接受—修正与多 Token 验证不会改变目标模型的输出分布，“减少串行步数”指一次目标模型前向可验证多个草稿位置。它不是测试时搜索，不与 beam search 等多候选搜索策略混同，也不承诺脱离成本测量的加速比。
+
+::: {.content-visible when-format="html"}
+```{=html}
+<div class="interactive-mount">
+<llm-speculative-decoding data-figure-id="fig-speculative-decoding"></llm-speculative-decoding>
+</div>
+<script type="module">
+import { defineSpeculativeDecodingElement } from './assets/js/components/speculative-decoding.js';
+defineSpeculativeDecodingElement();
+</script>
+```
+
+<noscript markdown="1">
+
+![投机解码分布、接受率与拒绝后残差静态图。](assets/figures/speculative-decoding.svg){data-external="1" #fig-speculative-decoding fig-alt="投机解码静态分布图。目标分布 p 为 [0.5, 0.3, 0.2]，草稿分布 q 为 [0.4, 0.4, 0.2]，A、B、C 的逐 Token 接受率分别为 1、0.75、1，总接受率为 0.9，拒绝后归一化残差为 [1, 0, 0]。接受—修正保持目标分布并减少严格串行步数，不是测试时搜索。"}
+
+<div data-testid="speculative-static-results">
+<p><strong>投机解码静态分布算例</strong></p>
+<ul>
+<li>Token A：目标 p = 0.5，草稿 q = 0.4，逐 Token 接受率 = 1，拒绝后归一化残差 = 1。</li>
+<li>Token B：目标 p = 0.3，草稿 q = 0.4，逐 Token 接受率 = 0.75，拒绝后归一化残差 = 0。</li>
+<li>Token C：目标 p = 0.2，草稿 q = 0.2，逐 Token 接受率 = 1，拒绝后归一化残差 = 0。</li>
+<li>总接受率 = 0.9；完整残差分布 = [1, 0, 0]。</li>
+</ul>
+</div>
+
+静态结果与交互默认值一致；接受—修正保持目标分布、减少严格串行步数，不是测试时搜索。
+
+</noscript>
+:::
+
+::: {.content-visible unless-format="html"}
+![投机解码分布、接受率与拒绝后残差静态图。](assets/figures/speculative-decoding.svg){data-external="1" #fig-speculative-decoding fig-alt="投机解码静态分布图。目标分布 p 为 [0.5, 0.3, 0.2]，草稿分布 q 为 [0.4, 0.4, 0.2]，A、B、C 的逐 Token 接受率分别为 1、0.75、1，总接受率为 0.9，拒绝后归一化残差为 [1, 0, 0]。接受—修正保持目标分布并减少严格串行步数，不是测试时搜索。"}
+
+| Token | 目标 p | 草稿 q | 逐 Token 接受率 | 拒绝后归一化残差 |
+|:--|--:|--:|--:|--:|
+| A | 0.5 | 0.4 | 1 | 1 |
+| B | 0.3 | 0.4 | 0.75 | 0 |
+| C | 0.2 | 0.2 | 1 | 0 |
+| 总接受率 | — | — | 0.9 | — |
+
+: 投机解码静态分布算例 {#tbl-speculative-decoding-static}
+
+静态结果与交互默认值一致；接受—修正保持目标分布、减少严格串行步数，不是测试时搜索。
+:::
+
 ## 批处理与连续批处理 {#sec-batching}
 
 **静态批处理**在批次开始前集齐一组请求，按相同步调执行，待整批结束后再处理下一批。它便于理解，但变长输入需要 padding，早结束的序列可能等待同批最长序列，新到请求也要等待批次边界。**连续批处理**则在 decode 步骤或更细的调度边界上增删请求：完成的请求释放 KV 槽位，新请求可在后续步骤加入，从而减少“整批齐步走”的空等。具体实现是否把 prefill 与 decode 合并、是否采用 chunked prefill、如何避免长 prefill 阻塞，都由调度策略决定。

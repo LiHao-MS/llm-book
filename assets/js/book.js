@@ -12,6 +12,12 @@ import { defineInferenceCalculatorElement } from './components/inference-calcula
 import { defineRlFoundationsElement } from './components/rl-foundations.js';
 import { defineRlhfAlignmentElement } from './components/rlhf-alignment.js';
 import { defineFrontierRLElement } from './components/frontier-rl.js';
+import { defineDistributedTrainingElement } from './components/distributed-training.js';
+import { defineRetrievalRagElement } from './components/retrieval-rag.js';
+import { defineMultimodalPatchElement } from './components/multimodal-patch.js';
+import { defineCausalMaskExplorerElement } from './components/causal-mask-explorer.js';
+import { definePpoClippingElement } from './components/ppo-clipping.js';
+import { defineSpeculativeDecodingElement } from './components/speculative-decoding.js';
 
 defineAttentionMatrixElement();
 defineCrossEntropyElement();
@@ -27,3 +33,9 @@ defineInferenceCalculatorElement();
 defineRlFoundationsElement();
 defineRlhfAlignmentElement();
 defineFrontierRLElement();
+defineDistributedTrainingElement();
+defineRetrievalRagElement();
+defineMultimodalPatchElement();
+defineCausalMaskExplorerElement();
+definePpoClippingElement();
+defineSpeculativeDecodingElement();

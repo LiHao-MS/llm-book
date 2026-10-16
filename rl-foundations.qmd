@@ -302,7 +302,26 @@ L^{\mathrm{CLIP}}(\theta)
 \end{aligned}
 $$
 
-这里 $\epsilon_c>0$ 是截断范围。取 $\min$ 时必须同时考虑 $\hat A_t$ 的符号。以 $\epsilon_c=0.2$ 为例：当 $\hat A_t=1,\rho_t=1.4$ 时，两项为 $1.4$ 和 $1.2$，目标取 $1.2$；当 $\hat A_t=-1,\rho_t=0.6$ 时，两项为 $-0.6$ 和 $-0.8$，目标取 $-0.8$。前者削弱“继续放大已经过大的正优势动作比率”的激励，后者削弱“继续缩小已经过小的负优势动作比率”的激励。
+这里 $\epsilon_c>0$ 是截断范围。取 $\min$ 时必须同时考虑 $\hat A_t$ 的符号。以 $\epsilon_c=0.2$ 为例：当 $\hat A_t=1,\rho_t=1.4$ 时，两项为 $1.4$ 和 $1.2$，目标取 $1.2$；当 $\hat A_t=-1,\rho_t=0.6$ 时，两项为 $-0.6$ 和 $-0.8$，目标取 $-0.8$。前者削弱“继续放大已经过大的正优势动作比率”的激励，后者削弱“继续缩小已经过小的负优势动作比率”的激励。@fig-ppo-clipping 可同时对照三条曲线和当前点的数值。
+
+:::: {.content-visible when-format="html"}
+```{=html}
+<div class="interactive-mount">
+<llm-ppo-clipping data-figure-id="fig-ppo-clipping" ratio="1.4" epsilon="0.2" advantage="1"></llm-ppo-clipping>
+</div>
+<script type="module">import { definePpoClippingElement } from './assets/js/components/ppo-clipping.js'; definePpoClippingElement();</script>
+```
+
+<noscript markdown="1">
+
+![PPO 截断目标曲线：正、负优势下的未截断项、截断项与 min 目标。](assets/figures/ppo-clipping.svg){data-external="1" #fig-ppo-clipping fig-alt="PPO 截断目标曲线。固定 ε=0.2：正优势 A=1、ρ=1.4 时，未截断项 1.4、截断项 1.2、min 目标 1.2；负优势 A=-1、ρ=0.6 时，未截断项 -0.6、截断项 -0.8、min 目标 -0.8。横轴为概率比，紫色竖线为 1±ε，圆点标出当前例；clip 只定义代理目标，不是参数或概率比的硬约束。"}
+
+</noscript>
+::::
+
+:::: {.content-visible unless-format="html"}
+![PPO 截断目标曲线：正、负优势下的未截断项、截断项与 min 目标。](assets/figures/ppo-clipping.svg){data-external="1" #fig-ppo-clipping fig-alt="PPO 截断目标曲线。固定 ε=0.2：正优势 A=1、ρ=1.4 时，未截断项 1.4、截断项 1.2、min 目标 1.2；负优势 A=-1、ρ=0.6 时，未截断项 -0.6、截断项 -0.8、min 目标 -0.8。横轴为概率比，紫色竖线为 1±ε，圆点标出当前例；clip 只定义代理目标，不是参数或概率比的硬约束。"}
+::::
 
 截断只定义代理目标，不是把参数更新投影到硬信赖域，也不保证更新后的每个 $\rho_t$ 都落在 $[1-\epsilon_c,1+\epsilon_c]$。实际结果还受优势估计、学习率、批次数和优化轮数影响。典型 PPO 实现同时训练 Critic，并可能加入熵正则；这些附加项应与 $L^{\mathrm{CLIP}}$ 分开检查，而不能都归因于 clip。
 

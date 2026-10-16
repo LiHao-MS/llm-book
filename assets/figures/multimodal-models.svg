@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" role="img" aria-labelledby="title desc">
+  <title id="title">视觉编码、投影或融合与共享 LLM 的多模态接口及 patch 序列账</title>
+  <desc id="desc">上方是可选多模态接口地图：图像 patch 或音频帧经模态编码器形成向量序列，再由线性投影、Q-Former、early fusion 或 cross-attention 连接共享 LLM。下方固定 224×224 图像和 20 个文本 Token：P=14 时为 16×16 网格、256 个视觉 Token、总序列 276、教学全注意力分数 76176；P=16 时为 14×14、196、216、46656；P=32 时为 7×7、49、69、4761。L² 只数教学分数，不是完整 FLOPs、显存、时延或 benchmark。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#4C5F6A"/>
+    </marker>
+    <style>
+      .panel { fill: #F8FAFB; stroke: #8A9AA5; stroke-width: 2; }
+      .box { fill: #FFFFFF; stroke: #8A9AA5; stroke-width: 1.5; }
+      .arrow { fill: none; stroke: #4C5F6A; stroke-width: 2.5; marker-end: url(#arrow); }
+      .title { fill: #172B3A; font-size: 28px; font-weight: 700; }
+      .heading { fill: #172B3A; font-size: 20px; font-weight: 700; }
+      .label { fill: #172B3A; font-size: 16px; }
+      .small { fill: #4C5F6A; font-size: 14px; }
+      .number { fill: #8C421F; font-size: 17px; font-weight: 700; }
+      .grid-a { fill: #DCEBF2; stroke: #FFFFFF; stroke-width: 1; }
+      .grid-b { fill: #BBD5E2; stroke: #FFFFFF; stroke-width: 1; }
+    </style>
+  </defs>
+  <rect width="1200" height="740" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif">
+    <text x="600" y="42" text-anchor="middle" class="title">多模态：对齐与融合不是同一种“统一”</text>
+    <text x="600" y="70" text-anchor="middle" class="small">视觉编码 → 投影 / 融合 → 共享 LLM；方框是可选接口地图，不是单一真实模型</text>
+
+    <rect class="panel" x="30" y="100" width="340" height="250" rx="14"/>
+    <rect class="panel" x="430" y="100" width="340" height="250" rx="14"/>
+    <rect class="panel" x="830" y="100" width="340" height="250" rx="14"/>
+
+    <text x="200" y="135" text-anchor="middle" class="heading">1. 模态编码</text>
+    <rect class="box" x="60" y="158" width="280" height="48" rx="7"/>
+    <text x="200" y="188" text-anchor="middle" class="label">图像 patch / 音频帧</text>
+    <path class="arrow" d="M200 210 V230"/>
+    <rect class="box" x="60" y="238" width="280" height="48" rx="7"/>
+    <text x="200" y="268" text-anchor="middle" class="label">视觉 / 音频编码器</text>
+    <text x="200" y="317" text-anchor="middle" class="small">输出带空间或时间位置的向量序列</text>
+
+    <text x="600" y="135" text-anchor="middle" class="heading">2. 投影或融合</text>
+    <rect class="box" x="460" y="158" width="280" height="48" rx="7"/>
+    <text x="600" y="188" text-anchor="middle" class="label">线性投影 W_p / Q-Former</text>
+    <path class="arrow" d="M600 210 V230"/>
+    <rect class="box" x="460" y="238" width="280" height="48" rx="7"/>
+    <text x="600" y="268" text-anchor="middle" class="label">early fusion / cross-attention</text>
+    <text x="600" y="317" text-anchor="middle" class="small">统一维度不等于自动统一语义</text>
+
+    <text x="1000" y="135" text-anchor="middle" class="heading">3. 共享语言模型</text>
+    <rect class="box" x="860" y="158" width="280" height="48" rx="7"/>
+    <text x="1000" y="188" text-anchor="middle" class="label">视觉表示 + 指令 / 问题</text>
+    <path class="arrow" d="M1000 210 V230"/>
+    <rect class="box" x="860" y="238" width="280" height="48" rx="7"/>
+    <text x="1000" y="268" text-anchor="middle" class="label">共享 LLM：条件生成回答</text>
+    <text x="1000" y="317" text-anchor="middle" class="small">仍需幻觉、模态偏置与成本评测</text>
+
+    <path class="arrow" d="M376 225 H418"/>
+    <path class="arrow" d="M776 225 H818"/>
+
+    <rect class="panel" x="30" y="385" width="1140" height="325" rx="14"/>
+    <text x="600" y="420" text-anchor="middle" class="heading">Patch 教学账：224 × 224 图像，文本 Token 固定为 20</text>
+
+    <g>
+      <rect class="grid-a" x="60" y="455" width="30" height="30"/><rect class="grid-b" x="90" y="455" width="30" height="30"/><rect class="grid-a" x="120" y="455" width="30" height="30"/><rect class="grid-b" x="150" y="455" width="30" height="30"/><rect class="grid-a" x="180" y="455" width="30" height="30"/><rect class="grid-b" x="210" y="455" width="30" height="30"/><rect class="grid-a" x="240" y="455" width="30" height="30"/>
+      <rect class="grid-b" x="60" y="485" width="30" height="30"/><rect class="grid-a" x="90" y="485" width="30" height="30"/><rect class="grid-b" x="120" y="485" width="30" height="30"/><rect class="grid-a" x="150" y="485" width="30" height="30"/><rect class="grid-b" x="180" y="485" width="30" height="30"/><rect class="grid-a" x="210" y="485" width="30" height="30"/><rect class="grid-b" x="240" y="485" width="30" height="30"/>
+      <rect class="grid-a" x="60" y="515" width="30" height="30"/><rect class="grid-b" x="90" y="515" width="30" height="30"/><rect class="grid-a" x="120" y="515" width="30" height="30"/><rect class="grid-b" x="150" y="515" width="30" height="30"/><rect class="grid-a" x="180" y="515" width="30" height="30"/><rect class="grid-b" x="210" y="515" width="30" height="30"/><rect class="grid-a" x="240" y="515" width="30" height="30"/>
+      <rect class="grid-b" x="60" y="545" width="30" height="30"/><rect class="grid-a" x="90" y="545" width="30" height="30"/><rect class="grid-b" x="120" y="545" width="30" height="30"/><rect class="grid-a" x="150" y="545" width="30" height="30"/><rect class="grid-b" x="180" y="545" width="30" height="30"/><rect class="grid-a" x="210" y="545" width="30" height="30"/><rect class="grid-b" x="240" y="545" width="30" height="30"/>
+      <rect class="grid-a" x="60" y="575" width="30" height="30"/><rect class="grid-b" x="90" y="575" width="30" height="30"/><rect class="grid-a" x="120" y="575" width="30" height="30"/><rect class="grid-b" x="150" y="575" width="30" height="30"/><rect class="grid-a" x="180" y="575" width="30" height="30"/><rect class="grid-b" x="210" y="575" width="30" height="30"/><rect class="grid-a" x="240" y="575" width="30" height="30"/>
+      <rect class="grid-b" x="60" y="605" width="30" height="30"/><rect class="grid-a" x="90" y="605" width="30" height="30"/><rect class="grid-b" x="120" y="605" width="30" height="30"/><rect class="grid-a" x="150" y="605" width="30" height="30"/><rect class="grid-b" x="180" y="605" width="30" height="30"/><rect class="grid-a" x="210" y="605" width="30" height="30"/><rect class="grid-b" x="240" y="605" width="30" height="30"/>
+      <rect class="grid-a" x="60" y="635" width="30" height="30"/><rect class="grid-b" x="90" y="635" width="30" height="30"/><rect class="grid-a" x="120" y="635" width="30" height="30"/><rect class="grid-b" x="150" y="635" width="30" height="30"/><rect class="grid-a" x="180" y="635" width="30" height="30"/><rect class="grid-b" x="210" y="635" width="30" height="30"/><rect class="grid-a" x="240" y="635" width="30" height="30"/>
+      <rect x="60" y="455" width="210" height="210" fill="none" stroke="#172B3A" stroke-width="2"/>
+    </g>
+    <text x="165" y="692" text-anchor="middle" class="small">P=32：7 × 7 = 49 个视觉 Token</text>
+
+    <text x="350" y="466" class="number">P</text>
+    <text x="430" y="466" class="number">网格</text>
+    <text x="610" y="466" class="number">视觉 + 文本 = L</text>
+    <text x="900" y="466" class="number">L² 分数</text>
+    <line x1="330" y1="482" x2="1135" y2="482" stroke="#DDE3E7" stroke-width="2"/>
+
+    <text x="350" y="519" class="label">14</text>
+    <text x="430" y="519" class="label">16 × 16</text>
+    <text x="610" y="519" class="label">256 + 20 = 276</text>
+    <text x="900" y="519" class="label">276² = 76,176</text>
+
+    <text x="350" y="562" class="label">16</text>
+    <text x="430" y="562" class="label">14 × 14</text>
+    <text x="610" y="562" class="label">196 + 20 = 216</text>
+    <text x="900" y="562" class="label">216² = 46,656</text>
+
+    <text x="350" y="605" class="label">32</text>
+    <text x="430" y="605" class="label">7 × 7</text>
+    <text x="610" y="605" class="label">49 + 20 = 69</text>
+    <text x="900" y="605" class="label">69² = 4,761</text>
+
+    <text x="330" y="650" class="small">L = N_v + 20；L² 仅是教学全注意力分数数量。</text>
+    <text x="330" y="682" class="small">不含特殊 Token，不对应某一真实模型，也不表示完整 FLOPs 或 benchmark。</text>
+  </g>
+</svg>

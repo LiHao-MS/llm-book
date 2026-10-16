@@ -148,7 +148,24 @@ $$
 
 @fig-causal-mask 对固定分数矩阵施加掩码。第一行只保留当前位置，第二行在前两个位置均分，第三行可读取全部三个位置；右侧每行权重和仍为一。因果掩码约束的是位置可见性，padding 掩码处理的是补齐位置，两者可以组合但不能互相替代。
 
+::: {.content-visible when-format="html"}
+```{=html}
+<div class="interactive-mount">
+<llm-causal-mask-explorer data-figure-id="fig-causal-mask" query-index="0"></llm-causal-mask-explorer>
+</div>
+<script type="module">import { defineCausalMaskExplorerElement } from './assets/js/components/causal-mask-explorer.js'; defineCausalMaskExplorerElement();</script>
+```
+
+<noscript markdown="1">
+
 ![因果掩码把严格上三角分数设为负无穷，Softmax 后未来位置权重为零。](assets/figures/causal-mask.svg){data-external="1" #fig-causal-mask fig-alt="三乘三因果掩码数值图。原始分数矩阵为 [[2,1,3],[1,1,1],[3,1,2]]；严格上三角在 Softmax 前变为 −∞，得到 [[2,−∞,−∞],[1,1,−∞],[3,1,2]]。逐行 Softmax 后权重为 [[1,0,0],[0.5,0.5,0],[0.6652,0.0900,0.2447]]，每行和为一，主对角线保留。"}
+
+</noscript>
+:::
+
+::: {.content-visible unless-format="html"}
+![因果掩码把严格上三角分数设为负无穷，Softmax 后未来位置权重为零。](assets/figures/causal-mask.svg){data-external="1" #fig-causal-mask fig-alt="三乘三因果掩码数值图。原始分数矩阵为 [[2,1,3],[1,1,1],[3,1,2]]；严格上三角在 Softmax 前变为 −∞，得到 [[2,−∞,−∞],[1,1,−∞],[3,1,2]]。逐行 Softmax 后权重为 [[1,0,0],[0.5,0.5,0],[0.6652,0.0900,0.2447]]，每行和为一，主对角线保留。"}
+:::
 
 ## RoPE：用旋转注入位置 {#sec-rope}
 

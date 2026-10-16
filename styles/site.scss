@@ -12,7 +12,8 @@ $link-hover-decoration: underline;
 }
 
 .content p a,
-.content li a.quarto-xref {
+.content li a.quarto-xref,
+.content li a[role="doc-biblioref"] {
   text-decoration: underline;
 }
 
@@ -59,6 +60,10 @@ llm-decoding-explorer {
   border: 1px solid #c4cdd2;
   border-radius: 0.5rem;
   background: #f7f9fa;
+}
+
+.interactive-widget summary {
+  color: #172b3a;
 }
 
 .interactive-controls {

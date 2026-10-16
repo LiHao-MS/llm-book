@@ -36,7 +36,7 @@ test('HTML home page contains the book title', () => {
 
 test('HTML home page describes the current published scope', () => {
   const html = readFileSync(htmlPath, 'utf8');
-  assert.match(html, /当前版本已发布 11 个章节页面/);
+  assert.match(html, /当前版本已发布 14 个章节页面/);
   assert.doesNotMatch(html, /纵向样板|不表示所有章节均已发布/);
 });
 
@@ -498,10 +498,13 @@ test('emitted HTML has no third-party runtime dependencies', () => {
     attentionHtmlPath,
     join(bookDir, 'transformer-architecture.html'),
     join(bookDir, 'pretraining-scaling.html'),
+    join(bookDir, 'distributed-training.html'),
     join(bookDir, 'inference-systems.html'),
     join(bookDir, 'rl-foundations.html'),
     join(bookDir, 'rlhf-alignment.html'),
     join(bookDir, 'frontier-rl.html'),
+    join(bookDir, 'retrieval-rag.html'),
+    join(bookDir, 'multimodal-models.html'),
   ]) {
     assert.ok(existsSync(path), `${path} does not exist`);
     const html = readFileSync(path, 'utf8');
@@ -732,11 +735,14 @@ test('Typst PDF uses Chinese chapter labels and keeps all static figures', () =>
   assert.match(text, /章节\s+5\.\s+序列建模与自注意力机制/);
   assert.match(text, /章节\s+6\.\s+Transformer 架构与预训练/);
   assert.match(text, /章节\s+7\.\s+预训练与 Scaling Laws/);
-  assert.match(text, /章节\s+8\.\s+推理与系统工程/);
-  assert.match(text, /章节\s+9\.\s+强化学习基础：从 MDP 到 PPO/);
-  assert.match(text, /章节\s+10\.\s+后训练、偏好优化与 RLHF/);
-  assert.match(text, /章节\s+11\.\s+前沿 RL、Agentic RL 与开放问题/);
-  assert.doesNotMatch(text, /Chapter\s+(?:[1-9]|10|11)\./);
+  assert.match(text, /章节\s+8\.\s+分布式训练与显存优化/);
+  assert.match(text, /章节\s+9\.\s+推理与系统工程/);
+  assert.match(text, /章节\s+10\.\s+强化学习基础：从 MDP 到 PPO/);
+  assert.match(text, /章节\s+11\.\s+后训练、偏好优化与 RLHF/);
+  assert.match(text, /章节\s+12\.\s+前沿 RL、Agentic RL 与开放问题/);
+  assert.match(text, /章节\s+13\.\s+检索、RAG 与上下文管理/);
+  assert.match(text, /章节\s+14\.\s+多模态模型与统一表示/);
+  assert.doesNotMatch(text, /Chapter\s+(?:[1-9]|1[0-4])\./);
   for (const figureText of [
     '从上下文到下一 Token 分布',
     '交叉熵：L(p) = −ln p',
@@ -750,10 +756,15 @@ test('Typst PDF uses Chinese chapter labels and keeps all static figures', () =>
     'RoPE 将二维向量逆时针旋转并保持范数，Query 与 Key 的相对夹角由位置差决定',
     'Pre-LN Transformer Block 数值图',
     '教学 Scaling Laws：系数仅用于演示，并非论文拟合值',
+    'DP、TP、PP 数据流与四阶段流水线时间线',
     '推理系统的显存层次、KV cache、连续批处理与成本换算',
+    '投机解码分布、接受率与拒绝后残差静态图',
     '两状态 MDP：价值迭代与贪心策略',
+    'PPO 截断目标曲线：正、负优势下的未截断项、截断项与 min 目标',
     '后训练流程与 RLHF／DPO 玩具目标对比',
     '四种回答在结果奖励、含漏洞的文本标记奖励和重算检查奖励下的总奖励与组内优势',
+    '检索到重排、Token 预算、生成与引用的静态流程图',
+    '视觉编码经投影或融合进入共享 LLM，以及三组 patch 序列账的静态图',
   ]) {
     assert.ok(text.includes(figureText), `PDF is missing figure text: ${figureText}`);
   }
@@ -794,6 +805,21 @@ test('Pretraining and scaling chapter is complete', () => {
     'sec-cost',
     'fig-pretraining-scaling',
   ], ['Scaling Laws', 'Kaplan', 'Chinchilla', 'MoE', '练习']);
+});
+
+test('Distributed training chapter is complete', () => {
+  assertChapterIncludes('distributed-training.html', [
+    'sec-distributed-toy',
+    'sec-gradient-accumulation',
+    'sec-data-parallel',
+    'sec-tensor-parallel',
+    'sec-pipeline-parallel',
+    'sec-zero-fsdp',
+    'sec-activation-recomputation',
+    'sec-3d-parallelism',
+    'sec-distributed-demo',
+    'fig-distributed-training',
+  ], ['ZeRO', 'FSDP', 'Megatron-LM', 'GPipe', '激活重计算', '练习']);
 });
 
 test('Inference systems chapter is complete', () => {
@@ -869,14 +895,104 @@ test('Frontier RL chapter is complete', () => {
   ], ['RLVR', 'Agentic RL', '可验证奖励', '开放问题', '练习']);
 });
 
+test('Retrieval and RAG chapter is complete', () => {
+  assertChapterIncludes('retrieval-rag.html', [
+    'sec-rag-pipeline',
+    'sec-chunking',
+    'sec-vector-retrieval',
+    'sec-metadata-filter',
+    'sec-ann',
+    'sec-reranking',
+    'sec-context-assembly',
+    'sec-groundedness',
+    'sec-rag-evaluation',
+    'sec-long-context',
+    'fig-retrieval-rag',
+  ], ['Dense Passage Retrieval', 'HNSW', 'FAISS', 'groundedness', 'Lost in the Middle', '练习']);
+});
+
+test('Multimodal models chapter is complete', () => {
+  assertChapterIncludes('multimodal-models.html', [
+    'sec-multimodal-tokenization',
+    'sec-modality-encoders',
+    'sec-contrastive-alignment',
+    'sec-projection-qformer',
+    'sec-fusion-paths',
+    'sec-visual-instruction-tuning',
+    'sec-unified-representation-limits',
+    'sec-multimodal-evaluation',
+    'fig-multimodal-models',
+  ], ['ViT', 'CLIP', 'Q-Former', 'cross-attention', 'LLaVA', '练习']);
+});
+
+test('new chapters resolve primary-source citations and no BibTeX entry is unused', () => {
+  const expected = {
+    'distributed-training.html': [
+      'micikevicius2018mixed',
+      'shoeybi2019megatron',
+      'huang2019gpipe',
+      'rajbhandari2020zero',
+      'zhao2023pytorch',
+      'chen2016training',
+      'narayanan2021efficient',
+    ],
+    'retrieval-rag.html': [
+      'lewis2020rag',
+      'karpukhin2020dpr',
+      'malkov2020hnsw',
+      'johnson2021faiss',
+      'khattab2020colbert',
+      'saadfalcon2024ares',
+      'liu2024lost',
+    ],
+    'multimodal-models.html': [
+      'dosovitskiy2020image',
+      'baevski2020wav2vec',
+      'radford2021clip',
+      'alayrac2022flamingo',
+      'li2023blip2',
+      'liu2023visualinstruction',
+      'li2023pope',
+    ],
+  };
+  const allCitationKeys = new Set();
+  for (const filename of readdirSync(bookDir).filter((entry) => entry.endsWith('.html'))) {
+    const html = readChapterFile(filename);
+    assert.doesNotMatch(html, /\[\?\]/, `${filename} has an unresolved citation`);
+    for (const match of html.matchAll(/data-cites="([^"]*)"/g)) {
+      for (const key of match[1].split(/\s+/)) {
+        allCitationKeys.add(key);
+      }
+    }
+  }
+  for (const [filename, keys] of Object.entries(expected)) {
+    const html = readChapterFile(filename);
+    for (const key of keys) {
+      assert.ok(allCitationKeys.has(key), `${filename} does not cite ${key}`);
+      assert.ok(html.includes(`id="ref-${key}"`), `${filename} has no reference entry for ${key}`);
+    }
+  }
+  const bibliography = readFileSync(join(projectRoot, 'references.bib'), 'utf8');
+  const bibliographyKeys = [...bibliography.matchAll(/^@\w+\{([^,\s]+)/gm)].map((match) => match[1]);
+  assert.ok(bibliographyKeys.length > 0);
+  for (const key of bibliographyKeys) {
+    assert.ok(allCitationKeys.has(key), `BibTeX entry is unused: ${key}`);
+  }
+});
+
 test('advanced chapters reference their existing static figures', () => {
   for (const [filename, figure] of [
     ['transformer-architecture.html', 'transformer-block.svg'],
     ['pretraining-scaling.html', 'pretraining-scaling.svg'],
+    ['distributed-training.html', 'distributed-training.svg'],
     ['inference-systems.html', 'inference-systems.svg'],
+    ['inference-systems.html', 'speculative-decoding.svg'],
     ['rl-foundations.html', 'rl-foundations.svg'],
+    ['rl-foundations.html', 'ppo-clipping.svg'],
     ['rlhf-alignment.html', 'rlhf-alignment.svg'],
     ['frontier-rl.html', 'frontier-rl.svg'],
+    ['retrieval-rag.html', 'retrieval-rag.svg'],
+    ['multimodal-models.html', 'multimodal-models.svg'],
   ]) {
     assert.ok(
       readChapterFile(filename).includes(`assets/figures/${figure}`),
@@ -898,10 +1014,13 @@ test('HTML navigation stays relative and each page has bounded payload', () => {
     'attention.html',
     'transformer-architecture.html',
     'pretraining-scaling.html',
+    'distributed-training.html',
     'inference-systems.html',
     'rl-foundations.html',
     'rlhf-alignment.html',
     'frontier-rl.html',
+    'retrieval-rag.html',
+    'multimodal-models.html',
   ]) {
     const path = join(bookDir, filename);
     assert.ok(existsSync(path), `${path} does not exist`);
@@ -925,14 +1044,17 @@ test('Typst PDF includes every new chapter title', () => {
   for (const title of [
     '章节 6. Transformer 架构与预训练',
     '章节 7. 预训练与 Scaling Laws',
-    '章节 8. 推理与系统工程',
-    '章节 9. 强化学习基础：从 MDP 到 PPO',
-    '章节 10. 后训练、偏好优化与 RLHF',
-    '章节 11. 前沿 RL、Agentic RL 与开放问题',
+    '章节 8. 分布式训练与显存优化',
+    '章节 9. 推理与系统工程',
+    '章节 10. 强化学习基础：从 MDP 到 PPO',
+    '章节 11. 后训练、偏好优化与 RLHF',
+    '章节 12. 前沿 RL、Agentic RL 与开放问题',
+    '章节 13. 检索、RAG 与上下文管理',
+    '章节 14. 多模态模型与统一表示',
   ]) {
     assert.ok(text.includes(title), `PDF is missing chapter title: ${title}`);
   }
-  assert.doesNotMatch(text, /Chapter\s+[6-9]|Chapter\s+10|Chapter\s+11/);
+  assert.doesNotMatch(text, /Chapter\s+(?:[6-9]|1[0-4])/);
 });
 
 test('Typst PDF keeps advanced exercises and cited source names', () => {
@@ -943,10 +1065,13 @@ test('Typst PDF keeps advanced exercises and cited source names', () => {
   for (const marker of [
     /6\.11\s+练习/,
     /7\.13\s+练习/,
-    /8\.14\s+练习/,
-    /9\.13\s+练习/,
-    /10\.15\s+练习/,
-    /11\.13\s+练习/,
+    /8\.13\s+练习/,
+    /9\.14\s+练习/,
+    /10\.13\s+练习/,
+    /11\.15\s+练习/,
+    /12\.13\s+练习/,
+    /13\.15\s+练习/,
+    /14\.13\s+练习/,
   ]) {
     assert.match(text, marker);
   }
@@ -957,6 +1082,11 @@ test('Typst PDF keeps advanced exercises and cited source names', () => {
     'Muennighoff 等（2023）',
     'Shazeer 等（2017）',
     'Fedus 等（2021）',
+    'Micikevicius 等（2018）',
+    'Megatron-LM',
+    'GPipe',
+    'ZeRO',
+    'Narayanan 等（2021）',
     'Ouyang 等（2022）',
     'Christiano 等（2017）',
     'Schulman 等（2017）',
@@ -964,6 +1094,16 @@ test('Typst PDF keeps advanced exercises and cited source names', () => {
     'GRPO',
     'HumanEval',
     'ReAct',
+    'Retrieval-Augmented Generation',
+    'Dense Passage Retrieval',
+    'HNSW',
+    'FAISS',
+    'Lost in the Middle',
+    'ViT',
+    'CLIP',
+    'BLIP-2',
+    'Flamingo',
+    'Visual Instruction Tuning / LLaVA',
   ]) {
     assert.ok(
       compactText.includes(source.replace(/\s+/g, '')),

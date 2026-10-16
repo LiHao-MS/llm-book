@@ -133,13 +133,17 @@ test('所有章节禁用 JavaScript 时在移动端无水平溢出', async ({ br
     'attention',
     'transformer-architecture',
     'pretraining-scaling',
+    'distributed-training',
     'inference-systems',
     'rl-foundations',
     'rlhf-alignment',
     'frontier-rl',
+    'retrieval-rag',
+    'multimodal-models',
   ]) {
     const page = await context.newPage();
-    await openPage(page, `${mountPath}${chapter}.html`);
+    const response = await page.goto(`${mountPath}${chapter}.html`, { waitUntil: 'networkidle' });
+    expect(response.status(), `${chapter} 应返回已发布页面`).toBe(200);
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,
@@ -346,6 +350,21 @@ const searchCases = [
     query: 'reward hacking',
     path: '/llm-book/rlhf-alignment.html',
     title: '后训练、偏好优化与 RLHF',
+  },
+  {
+    query: 'ZeRO',
+    path: '/llm-book/distributed-training.html',
+    title: '分布式训练与显存优化',
+  },
+  {
+    query: 'Lost in the Middle',
+    path: '/llm-book/retrieval-rag.html',
+    title: '检索、RAG 与上下文管理',
+  },
+  {
+    query: 'Q-Former',
+    path: '/llm-book/multimodal-models.html',
+    title: '多模态模型与统一表示',
   },
 ];
 
