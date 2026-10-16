@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">两状态 MDP 的价值迭代与贪心策略</title>
+  <desc id="desc">两状态 MDP 价值迭代图。状态 A 的 a₀ 留在 A、奖励 0，a₁ 转到 B、奖励 0；状态 B 的 a₀ 转到 A、奖励 0，a₁ 留在 B、奖励 1。折扣因子为 0.5 时，同步价值迭代从 (0,0) 依次得到 (0,1)、(0.5,1.5)、(0.75,1.75)，并收敛到 V*(A)=1、V*(B)=2；由第一步后的价值可提取贪心策略 π(A)=a₁、π(B)=a₁。</desc>
+  <defs>
+    <marker id="optimal-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1F648C"/>
+    </marker>
+    <marker id="other-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5E6A70"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="720" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="43" text-anchor="middle" font-size="30" font-weight="700">两状态 MDP：价值迭代与贪心策略</text>
+
+    <rect x="45" y="75" width="500" height="585" rx="14" fill="#F8FAFB" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="295" y="114" text-anchor="middle" font-size="22" font-weight="700">确定性转移与即时奖励</text>
+    <text x="295" y="143" text-anchor="middle" font-size="16" fill="#4C5F6A">蓝色实线：最优动作 a₁；灰色虚线：另一动作 a₀</text>
+
+    <path d="M 145 270 C 95 190 265 190 215 270" fill="none" stroke="#5E6A70" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#other-arrow)"/>
+    <text x="180" y="184" text-anchor="middle" font-size="18" fill="#4C5F6A">a₀，r = 0</text>
+    <path d="M 385 270 C 335 190 505 190 455 270" fill="none" stroke="#1F648C" stroke-width="4" marker-end="url(#optimal-arrow)"/>
+    <text x="420" y="184" text-anchor="middle" font-size="18" fill="#1F648C">a₁，r = 1</text>
+
+    <line x1="240" y1="305" x2="354" y2="305" stroke="#1F648C" stroke-width="4" marker-end="url(#optimal-arrow)"/>
+    <text x="297" y="282" text-anchor="middle" font-size="18" fill="#1F648C">a₁，r = 0</text>
+    <path d="M 370 365 Q 300 445 230 365" fill="none" stroke="#5E6A70" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#other-arrow)"/>
+    <text x="300" y="432" text-anchor="middle" font-size="18" fill="#4C5F6A">a₀，r = 0</text>
+
+    <circle cx="180" cy="320" r="58" fill="#FFFFFF" stroke="#172B3A" stroke-width="3"/>
+    <circle cx="420" cy="320" r="58" fill="#FFFFFF" stroke="#172B3A" stroke-width="3"/>
+    <text x="180" y="332" text-anchor="middle" font-size="30" font-weight="700">A</text>
+    <text x="420" y="332" text-anchor="middle" font-size="30" font-weight="700">B</text>
+
+    <rect x="85" y="500" width="420" height="115" rx="10" fill="#FFFFFF" stroke="#C4CDD2" stroke-width="1.5"/>
+    <text x="105" y="532" font-size="17">奖励只由当前动作产生，转移是确定性的。</text>
+    <text x="105" y="562" font-size="17">因此一步前瞻只需计算 r + γV(s′)，</text>
+    <text x="105" y="592" font-size="17">不需要学习转移模型或运行神经网络。</text>
+
+    <rect x="575" y="75" width="580" height="585" rx="14" fill="#FBF8F3" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="865" y="114" text-anchor="middle" font-size="22" font-weight="700">γ = 0.5 的同步价值迭代</text>
+    <text x="865" y="153" text-anchor="middle" font-size="18">Vₖ₊₁(s) = maxₐ [r(s,a) + γVₖ(s′)]</text>
+
+    <rect x="625" y="184" width="480" height="276" rx="8" fill="#FFFFFF" stroke="#C4CDD2" stroke-width="1.5"/>
+    <line x1="625" y1="230" x2="1105" y2="230" stroke="#8A9AA5" stroke-width="1.5"/>
+    <line x1="705" y1="184" x2="705" y2="460" stroke="#DDE3E7" stroke-width="1.5"/>
+    <line x1="865" y1="184" x2="865" y2="460" stroke="#DDE3E7" stroke-width="1.5"/>
+    <text x="665" y="214" text-anchor="middle" font-size="18" font-weight="700">k</text>
+    <text x="785" y="214" text-anchor="middle" font-size="18" font-weight="700">Vₖ(A)</text>
+    <text x="985" y="214" text-anchor="middle" font-size="18" font-weight="700">Vₖ(B)</text>
+    <g font-size="19" text-anchor="middle">
+      <text x="665" y="268">0</text><text x="785" y="268">0</text><text x="985" y="268">0</text>
+      <text x="665" y="314">1</text><text x="785" y="314">0</text><text x="985" y="314">1</text>
+      <text x="665" y="360">2</text><text x="785" y="360">0.5</text><text x="985" y="360">1.5</text>
+      <text x="665" y="406">3</text><text x="785" y="406">0.75</text><text x="985" y="406">1.75</text>
+      <text x="665" y="450">∞</text><text x="785" y="450">1</text><text x="985" y="450">2</text>
+    </g>
+
+    <rect x="625" y="492" width="480" height="122" rx="10" fill="#FFFFFF" stroke="#C4CDD2" stroke-width="1.5"/>
+    <text x="650" y="526" font-size="18" font-weight="700">由 V₁ 提取的贪心策略</text>
+    <text x="650" y="560" font-size="20" fill="#1F648C">π(A) = a₁，π(B) = a₁</text>
+    <text x="650" y="592" font-size="16" fill="#4C5F6A">初始 V₀ 下 A 的两个动作并列；表中数值可手算复核。</text>
+    <text x="865" y="642" text-anchor="middle" font-size="16" fill="#4C5F6A">极限满足 V*(A) = γV*(B)，V*(B) = 1 + γV*(B)</text>
+  </g>
+</svg>

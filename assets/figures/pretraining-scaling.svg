@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">教学 Scaling 曲线、数据—参数分配与成本换算</title>
+  <desc id="desc">使用归一化玩具损失 L=1.5+2/√n+2√20/√d 和 c=6nd。左图显示最优 d=20n 时损失随算力下降，右图显示固定 c=480 时 r=20 为最低点；默认配置 n=2、d=40、L=4.328427。底部列出训练时间、dense 推理 FLOPs 与 16 位权重存储估算。</desc>
+  <rect width="1200" height="760" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="40" text-anchor="middle" font-size="29" font-weight="700">教学 Scaling Laws：系数仅用于演示，并非论文拟合值</text>
+
+    <rect x="40" y="70" width="550" height="500" rx="14" fill="#F8FAFB" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="315" y="108" text-anchor="middle" font-size="21" font-weight="700">最优配置：损失随算力变化</text>
+    <text x="315" y="136" text-anchor="middle" font-size="16" fill="#4C5F6A">d* = 20n*，横轴为 log c，60 ≤ c ≤ 6000</text>
+    <g stroke="#DDE3E7" stroke-width="1">
+      <line x1="110" y1="442.29" x2="540" y2="442.29"/>
+      <line x1="110" y1="365.14" x2="540" y2="365.14"/>
+      <line x1="110" y1="288.00" x2="540" y2="288.00"/>
+      <line x1="110" y1="210.86" x2="540" y2="210.86"/>
+      <line x1="110" y1="180" x2="110" y2="450"/>
+      <line x1="304.16" y1="180" x2="304.16" y2="450"/>
+      <line x1="540" y1="180" x2="540" y2="450"/>
+    </g>
+    <line x1="110" y1="450" x2="550" y2="450" stroke="#172B3A" stroke-width="2"/>
+    <line x1="110" y1="450" x2="110" y2="170" stroke="#172B3A" stroke-width="2"/>
+    <g font-size="14" fill="#4C5F6A">
+      <text x="98" y="447" text-anchor="end">3</text>
+      <text x="98" y="370" text-anchor="end">4</text>
+      <text x="98" y="293" text-anchor="end">5</text>
+      <text x="98" y="216" text-anchor="end">6</text>
+      <text x="110" y="475" text-anchor="middle">60</text>
+      <text x="304.16" y="475" text-anchor="middle">480</text>
+      <text x="540" y="475" text-anchor="middle">6000</text>
+      <text x="515" y="505">c（TFLOP）</text>
+      <text x="78" y="174">L</text>
+    </g>
+    <path d="M 110.00 191.04 L 117.17 198.02 L 124.33 204.86 L 131.50 211.57 L 138.67 218.16 L 145.83 224.61 L 153.00 230.95 L 160.17 237.17 L 167.33 243.26 L 174.50 249.25 L 181.67 255.11 L 188.83 260.87 L 196.00 266.52 L 203.17 272.06 L 210.33 277.49 L 217.50 282.82 L 224.67 288.05 L 231.83 293.18 L 239.00 298.22 L 246.17 303.15 L 253.33 308.00 L 260.50 312.75 L 267.67 317.41 L 274.83 321.98 L 282.00 326.47 L 289.17 330.87 L 296.33 335.18 L 303.50 339.42 L 310.67 343.57 L 317.83 347.65 L 325.00 351.65 L 332.17 355.57 L 339.33 359.41 L 346.50 363.19 L 353.67 366.89 L 360.83 370.52 L 368.00 374.09 L 375.17 377.58 L 382.33 381.01 L 389.50 384.37 L 396.67 387.67 L 403.83 390.91 L 411.00 394.09 L 418.17 397.20 L 425.33 400.26 L 432.50 403.26 L 439.67 406.20 L 446.83 409.08 L 454.00 411.91 L 461.17 414.69 L 468.33 417.41 L 475.50 420.08 L 482.67 422.71 L 489.83 425.28 L 497.00 427.80 L 504.17 430.27 L 511.33 432.70 L 518.50 435.08 L 525.67 437.42 L 532.83 439.71 L 540.00 441.96" fill="none" stroke="#1F648C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="304.16" y1="339.81" x2="304.16" y2="450" stroke="#71558A" stroke-width="2" stroke-dasharray="7 6"/>
+    <circle cx="304.16" cy="339.81" r="7" fill="#B55224" stroke="#FFFFFF" stroke-width="2"/>
+    <text x="320" y="326" font-size="16" fill="#8C421F">c = 480，L = 4.328427</text>
+    <text x="130" y="530" font-size="17">n* = √(c/120)，d* = 20n*</text>
+    <text x="130" y="554" font-size="17" fill="#4C5F6A">默认点：n* = 2，d* = 40</text>
+
+    <rect x="610" y="70" width="550" height="500" rx="14" fill="#FBF8F3" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="885" y="108" text-anchor="middle" font-size="21" font-weight="700">固定 c = 480：选择 r = d/n</text>
+    <text x="885" y="136" text-anchor="middle" font-size="16" fill="#4C5F6A">n = √(c/6r)，d = rn；虚线标出玩具最优 r = 20</text>
+    <g stroke="#DDE3E7" stroke-width="1">
+      <line x1="680" y1="427.50" x2="1110" y2="427.50"/>
+      <line x1="680" y1="371.25" x2="1110" y2="371.25"/>
+      <line x1="680" y1="315.00" x2="1110" y2="315.00"/>
+      <line x1="680" y1="258.75" x2="1110" y2="258.75"/>
+      <line x1="680" y1="202.50" x2="1110" y2="202.50"/>
+      <line x1="680" y1="180" x2="680" y2="450"/>
+      <line x1="766" y1="180" x2="766" y2="450"/>
+      <line x1="880.67" y1="180" x2="880.67" y2="450"/>
+      <line x1="1110" y1="180" x2="1110" y2="450"/>
+    </g>
+    <line x1="680" y1="450" x2="1120" y2="450" stroke="#172B3A" stroke-width="2"/>
+    <line x1="680" y1="450" x2="680" y2="170" stroke="#172B3A" stroke-width="2"/>
+    <g font-size="14" fill="#4C5F6A">
+      <text x="668" y="432" text-anchor="end">4.30</text>
+      <text x="668" y="376" text-anchor="end">4.35</text>
+      <text x="668" y="320" text-anchor="end">4.40</text>
+      <text x="668" y="264" text-anchor="end">4.45</text>
+      <text x="668" y="208" text-anchor="end">4.50</text>
+      <text x="680" y="475" text-anchor="middle">5</text>
+      <text x="766" y="475" text-anchor="middle">20</text>
+      <text x="880.67" y="475" text-anchor="middle">40</text>
+      <text x="1110" y="475" text-anchor="middle">80</text>
+      <text x="1090" y="505">r = d/n</text>
+      <text x="648" y="174">L</text>
+    </g>
+    <path d="M 680.00 202.50 L 685.73 250.29 L 691.47 285.30 L 697.20 311.67 L 702.93 331.91 L 708.67 347.63 L 714.40 359.91 L 720.13 369.54 L 725.87 377.05 L 731.60 382.86 L 737.33 387.29 L 743.07 390.57 L 748.80 392.89 L 754.53 394.42 L 760.27 395.26 L 766.00 395.52 L 771.73 395.28 L 777.47 394.62 L 783.20 393.58 L 788.93 392.21 L 794.67 390.57 L 800.40 388.67 L 806.13 386.56 L 811.87 384.26 L 817.60 381.78 L 823.33 379.16 L 829.07 376.40 L 834.80 373.53 L 840.53 370.55 L 846.27 367.48 L 852.00 364.33 L 857.73 361.10 L 863.47 357.81 L 869.20 354.47 L 874.93 351.07 L 880.67 347.63 L 886.40 344.14 L 892.13 340.63 L 897.87 337.08 L 903.60 333.50 L 909.33 329.90 L 915.07 326.29 L 920.80 322.65 L 926.53 319.00 L 932.27 315.34 L 938.00 311.67 L 943.73 307.99 L 949.47 304.30 L 955.20 300.61 L 960.93 296.92 L 966.67 293.22 L 972.40 289.52 L 978.13 285.82 L 983.87 282.13 L 989.60 278.44 L 995.33 274.75 L 1001.07 271.06 L 1006.80 267.38 L 1012.53 263.71 L 1018.27 260.04 L 1024.00 256.38 L 1029.73 252.72 L 1035.47 249.07 L 1041.20 245.43 L 1046.93 241.80 L 1052.67 238.18 L 1058.40 234.57 L 1064.13 230.97 L 1069.87 227.37 L 1075.60 223.79 L 1081.33 220.21 L 1087.07 216.65 L 1092.80 213.10 L 1098.53 209.55 L 1104.27 206.02 L 1110.00 202.50" fill="none" stroke="#B55224" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="766" y1="180" x2="766" y2="450" stroke="#71558A" stroke-width="2" stroke-dasharray="7 6"/>
+    <circle cx="766" cy="395.52" r="7" fill="#39704A" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="708.67" cy="347.63" r="5" fill="#1F648C"/>
+    <circle cx="880.67" cy="347.63" r="5" fill="#1F648C"/>
+    <text x="783" y="414" font-size="16" fill="#39704A">最低：L = 4.328427</text>
+    <text x="700" y="530" font-size="17">r = 10 或 40：L = 4.371000</text>
+    <text x="700" y="554" font-size="17" fill="#4C5F6A">r = 5 或 80：L = 4.500000</text>
+
+    <rect x="40" y="590" width="1120" height="140" rx="14" fill="#F8FAFB" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="600" y="622" text-anchor="middle" font-size="20" font-weight="700">默认配置的数量级核对（c = 480，n = 2，d = 40）</text>
+    <text x="70" y="658" font-size="17" font-weight="700">训练时间</text>
+    <text x="70" y="686" font-size="16">T = 480 / 0.1 / 3600 = 1.333333 h</text>
+    <text x="70" y="712" font-size="14" fill="#4C5F6A">固定有效吞吐 0.1 TFLOP/s，仅换算 FLOPs</text>
+    <text x="450" y="658" font-size="17" font-weight="700">dense 推理</text>
+    <text x="450" y="686" font-size="16">FToken ≈ 2N = 4 MFLOP/Token</text>
+    <text x="450" y="712" font-size="14" fill="#4C5F6A">不含注意力、KV cache 与内存带宽</text>
+    <text x="845" y="658" font-size="17" font-weight="700">16 位权重</text>
+    <text x="845" y="686" font-size="16">Mweight ≈ 2N 字节 = 4 MB</text>
+    <text x="845" y="712" font-size="14" fill="#4C5F6A">不含梯度、优化器状态与激活</text>
+  </g>
+</svg>

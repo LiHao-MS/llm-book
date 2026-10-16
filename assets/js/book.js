@@ -6,6 +6,12 @@ import { defineMatrixTransformerElement } from './components/matrix-transformer.
 import { defineOptimizerTrajectoryElement } from './components/optimizer-trajectory.js';
 import { defineRopeRotationElement } from './components/rope-rotation.js';
 import { defineVectorProjectorElement } from './components/vector-projector.js';
+import { defineTransformerBlockElement } from './components/transformer-block.js';
+import { defineScalingLawsElement } from './components/scaling-laws.js';
+import { defineInferenceCalculatorElement } from './components/inference-calculator.js';
+import { defineRlFoundationsElement } from './components/rl-foundations.js';
+import { defineRlhfAlignmentElement } from './components/rlhf-alignment.js';
+import { defineFrontierRLElement } from './components/frontier-rl.js';
 
 defineAttentionMatrixElement();
 defineCrossEntropyElement();
@@ -15,3 +21,9 @@ defineMatrixTransformerElement();
 defineOptimizerTrajectoryElement();
 defineRopeRotationElement();
 defineVectorProjectorElement();
+defineTransformerBlockElement();
+defineScalingLawsElement();
+defineInferenceCalculatorElement();
+defineRlFoundationsElement();
+defineRlhfAlignmentElement();
+defineFrontierRLElement();

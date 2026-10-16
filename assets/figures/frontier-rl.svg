@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">RLVR 结果奖励、过程奖励与奖励劫持对比</title>
+  <desc id="desc">四个回答计算 37 乘 41。A 一致分解且正确，B 仅回答正确结果，C 正确但伪造 VERIFIER_OK，D 错误且伪造同一标记。只看结果时奖励为 1、1、1、0，优势为 0.577350、0.577350、0.577350、−1.732051；结果加文本标记时奖励为 1、1、1.2、0.2，优势为 0.390567、0.390567、0.911322、−1.692456；重算结果并检查分解时奖励为 1.2、1、1、0，优势为 0.852803、0.426401、0.426401、−1.705606。</desc>
+  <rect width="1200" height="800" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="42" text-anchor="middle" font-size="30" font-weight="700">RLVR：奖励规则如何改变组内相对优势</text>
+    <text x="600" y="70" text-anchor="middle" font-size="17" fill="#4C5F6A">同一组四个回答，比较三种可执行奖励规则</text>
+
+    <rect x="45" y="85" width="1110" height="165" rx="14" fill="#F8FAFB" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="600" y="116" text-anchor="middle" font-size="20" font-weight="700">任务：计算 37 × 41（正确答案 1517）</text>
+    <text x="70" y="156" font-size="18">A　37×41 = 37×40 + 37 = 1480 + 37 = 1517</text>
+    <text x="690" y="156" font-size="18">B　答案：1517</text>
+    <text x="70" y="199" font-size="18">C　答案：1517；VERIFIER_OK（伪造）</text>
+    <text x="690" y="199" font-size="18">D　答案：1417；VERIFIER_OK（伪造）</text>
+    <text x="70" y="231" font-size="15" fill="#4C5F6A">C、D 的文本标记都不是沙箱执行结果；A 的分解可由算术检查器复核。</text>
+
+    <text x="600" y="282" text-anchor="middle" font-size="18">R 为总奖励；A = (R − R̄) / (σᵣ + ε) 为组内标准化优势（ε = 10⁻¹²）</text>
+
+    <rect x="45" y="300" width="1110" height="60" fill="#DDE3E7" stroke="#8A9AA5" stroke-width="2"/>
+    <rect x="500" y="360" width="305" height="340" fill="#FBF8F3"/>
+    <rect x="45" y="360" width="1110" height="340" fill="none" stroke="#8A9AA5" stroke-width="2"/>
+    <line x1="205" y1="300" x2="205" y2="700" stroke="#8A9AA5" stroke-width="2"/>
+    <line x1="500" y1="300" x2="500" y2="700" stroke="#8A9AA5" stroke-width="2"/>
+    <line x1="805" y1="300" x2="805" y2="700" stroke="#8A9AA5" stroke-width="2"/>
+    <line x1="45" y1="445" x2="1155" y2="445" stroke="#C4CDD2" stroke-width="1.5"/>
+    <line x1="45" y1="530" x2="1155" y2="530" stroke="#C4CDD2" stroke-width="1.5"/>
+    <line x1="45" y1="615" x2="1155" y2="615" stroke="#C4CDD2" stroke-width="1.5"/>
+
+    <g text-anchor="middle" font-size="18" font-weight="700">
+      <text x="125" y="337">候选回答</text>
+      <text x="352" y="337">只看结果</text>
+      <text x="652" y="337">结果 + 文本标记（漏洞）</text>
+      <text x="980" y="337">重算结果 + 一致分解</text>
+    </g>
+
+    <g font-size="17">
+      <text x="70" y="392" font-weight="700">A　一致分解</text>
+      <text x="70" y="420" fill="#4C5F6A">正确，无标记</text>
+      <text x="230" y="392">R = 1</text>
+      <text x="230" y="420">A = 0.577350</text>
+      <text x="525" y="392">R = 1</text>
+      <text x="525" y="420">A = 0.390567</text>
+      <text x="830" y="392" font-weight="700">R = 1.2（分解 +0.2）</text>
+      <text x="830" y="420">A = 0.852803</text>
+
+      <text x="70" y="477" font-weight="700">B　只给答案</text>
+      <text x="70" y="505" fill="#4C5F6A">正确，无标记</text>
+      <text x="230" y="477">R = 1</text>
+      <text x="230" y="505">A = 0.577350</text>
+      <text x="525" y="477">R = 1</text>
+      <text x="525" y="505">A = 0.390567</text>
+      <text x="830" y="477">R = 1</text>
+      <text x="830" y="505">A = 0.426401</text>
+
+      <text x="70" y="562" font-weight="700">C　答案 + 伪造标记</text>
+      <text x="70" y="590" fill="#4C5F6A">答案正确</text>
+      <text x="230" y="562">R = 1</text>
+      <text x="230" y="590">A = 0.577350</text>
+      <text x="525" y="562" font-weight="700" fill="#8C421F">R = 1.2（标记 +0.2）</text>
+      <text x="525" y="590" font-weight="700" fill="#8C421F">A = 0.911322（最高）</text>
+      <text x="830" y="562">R = 1</text>
+      <text x="830" y="590">A = 0.426401</text>
+
+      <text x="70" y="647" font-weight="700">D　错答 + 伪造标记</text>
+      <text x="70" y="675" fill="#4C5F6A">答案错误</text>
+      <text x="230" y="647">R = 0</text>
+      <text x="230" y="675">A = −1.732051</text>
+      <text x="525" y="647" font-weight="700" fill="#8C421F">R = 0.2（错误仍得分）</text>
+      <text x="525" y="675">A = −1.692456</text>
+      <text x="830" y="647">R = 0</text>
+      <text x="830" y="675">A = −1.705606</text>
+    </g>
+
+    <rect x="500" y="530" width="305" height="85" fill="none" stroke="#B55224" stroke-width="4"/>
+    <rect x="500" y="615" width="305" height="85" fill="none" stroke="#B55224" stroke-width="3" stroke-dasharray="8 5"/>
+    <rect x="805" y="360" width="350" height="85" fill="none" stroke="#39704A" stroke-width="4"/>
+
+    <text x="600" y="742" text-anchor="middle" font-size="17" fill="#8C421F">漏洞规则让 C 获得最高优势；重算规则不再信任自报标记，并给可检查分解过程奖励。</text>
+    <text x="600" y="772" text-anchor="middle" font-size="15" fill="#4C5F6A">实线框标出最高优势与一致分解，虚线框标出“答案错误仍获正奖励”；颜色不是唯一编码。</text>
+  </g>
+</svg>

@@ -120,6 +120,39 @@ test('禁用 JavaScript 时两幅后备图可见且有替代文本', async ({ br
   await context.close();
 });
 
+test('所有章节禁用 JavaScript 时在移动端无水平溢出', async ({ browser }) => {
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    viewport: { width: 390, height: 844 },
+  });
+  for (const chapter of [
+    'index',
+    'softmax-cross-entropy',
+    'embedding-geometry',
+    'optimization',
+    'attention',
+    'transformer-architecture',
+    'pretraining-scaling',
+    'inference-systems',
+    'rl-foundations',
+    'rlhf-alignment',
+    'frontier-rl',
+  ]) {
+    const page = await context.newPage();
+    await openPage(page, `${mountPath}${chapter}.html`);
+    const dimensions = await page.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }));
+    expect(
+      dimensions.scrollWidth,
+      `${chapter} 在 390×844 视口的页面宽度 ${JSON.stringify(dimensions)}`,
+    ).toBeLessThanOrEqual(dimensions.clientWidth);
+    await page.close();
+  }
+  await context.close();
+});
+
 test('所有原生滑块都有显式标签和可见焦点', async ({ page }) => {
   await openPage(page, chapterPath);
   const sliders = page.getByRole('slider');
@@ -284,6 +317,36 @@ const searchCases = [
   { query: '强化学习', path: homePath, title: '理解大语言模型' },
   { query: 'RLHF', path: homePath, title: '理解大语言模型' },
   { query: 'Scaling Law', path: homePath, title: '理解大语言模型' },
+  {
+    query: 'Transformer',
+    path: '/llm-book/transformer-architecture.html',
+    title: 'Transformer 架构与预训练',
+  },
+  {
+    query: 'Scaling Laws',
+    path: '/llm-book/pretraining-scaling.html',
+    title: '预训练与 Scaling Laws',
+  },
+  {
+    query: 'KV cache',
+    path: '/llm-book/inference-systems.html',
+    title: '推理与系统工程',
+  },
+  {
+    query: 'RLVR',
+    path: '/llm-book/frontier-rl.html',
+    title: '前沿 RL、Agentic RL 与开放问题',
+  },
+  {
+    query: 'Agentic RL',
+    path: '/llm-book/frontier-rl.html',
+    title: '前沿 RL、Agentic RL 与开放问题',
+  },
+  {
+    query: 'reward hacking',
+    path: '/llm-book/rlhf-alignment.html',
+    title: '后训练、偏好优化与 RLHF',
+  },
 ];
 
 for (const { query, path, title } of searchCases) {

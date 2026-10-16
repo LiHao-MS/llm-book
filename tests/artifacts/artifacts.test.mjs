@@ -34,6 +34,12 @@ test('HTML home page contains the book title', () => {
   assert.match(readFileSync(htmlPath, 'utf8'), /理解大语言模型/);
 });
 
+test('HTML home page describes the current published scope', () => {
+  const html = readFileSync(htmlPath, 'utf8');
+  assert.match(html, /当前版本已发布 11 个章节页面/);
+  assert.doesNotMatch(html, /纵向样板|不表示所有章节均已发布/);
+});
+
 function readChapterHtml() {
   assert.ok(existsSync(chapterHtmlPath), `${chapterHtmlPath} does not exist`);
   return readFileSync(chapterHtmlPath, 'utf8');
@@ -484,7 +490,19 @@ test('published site stays below the GitHub Pages 1 GB limit', () => {
 test('emitted HTML has no third-party runtime dependencies', () => {
   const runtimePattern = /<(?:script|link|img|iframe|source|embed|object|video|audio|track|input)\b[^>]*\b(?:src|href|data|poster)\s*=\s*["'](?:https?:)?\/\//gi;
   const cssPattern = /(?:@import\s+(?:url\()?|url\()\s*["']?(?:https?:)?\/\//gi;
-  for (const path of [htmlPath, chapterHtmlPath, geometryHtmlPath, optimizationHtmlPath, attentionHtmlPath]) {
+  for (const path of [
+    htmlPath,
+    chapterHtmlPath,
+    geometryHtmlPath,
+    optimizationHtmlPath,
+    attentionHtmlPath,
+    join(bookDir, 'transformer-architecture.html'),
+    join(bookDir, 'pretraining-scaling.html'),
+    join(bookDir, 'inference-systems.html'),
+    join(bookDir, 'rl-foundations.html'),
+    join(bookDir, 'rlhf-alignment.html'),
+    join(bookDir, 'frontier-rl.html'),
+  ]) {
     assert.ok(existsSync(path), `${path} does not exist`);
     const html = readFileSync(path, 'utf8');
     assert.deepEqual([...html.matchAll(runtimePattern)].map((match) => match[0]), []);
@@ -712,7 +730,13 @@ test('Typst PDF uses Chinese chapter labels and keeps all static figures', () =>
   assert.match(text, /章节\s+3\.\s+向量、矩阵与 Embedding 几何/);
   assert.match(text, /章节\s+4\.\s+优化：从经验风险到 AdamW/);
   assert.match(text, /章节\s+5\.\s+序列建模与自注意力机制/);
-  assert.doesNotMatch(text, /Chapter\s+[12345]\./);
+  assert.match(text, /章节\s+6\.\s+Transformer 架构与预训练/);
+  assert.match(text, /章节\s+7\.\s+预训练与 Scaling Laws/);
+  assert.match(text, /章节\s+8\.\s+推理与系统工程/);
+  assert.match(text, /章节\s+9\.\s+强化学习基础：从 MDP 到 PPO/);
+  assert.match(text, /章节\s+10\.\s+后训练、偏好优化与 RLHF/);
+  assert.match(text, /章节\s+11\.\s+前沿 RL、Agentic RL 与开放问题/);
+  assert.doesNotMatch(text, /Chapter\s+(?:[1-9]|10|11)\./);
   for (const figureText of [
     '从上下文到下一 Token 分布',
     '交叉熵：L(p) = −ln p',
@@ -724,7 +748,226 @@ test('Typst PDF uses Chinese chapter labels and keeps all static figures', () =>
     '两个一维头从同一输入的不同坐标产生不同注意力矩阵，再按坐标拼接输出',
     '因果掩码把严格上三角分数设为负无穷，Softmax 后未来位置权重为零',
     'RoPE 将二维向量逆时针旋转并保持范数，Query 与 Key 的相对夹角由位置差决定',
+    'Pre-LN Transformer Block 数值图',
+    '教学 Scaling Laws：系数仅用于演示，并非论文拟合值',
+    '推理系统的显存层次、KV cache、连续批处理与成本换算',
+    '两状态 MDP：价值迭代与贪心策略',
+    '后训练流程与 RLHF／DPO 玩具目标对比',
+    '四种回答在结果奖励、含漏洞的文本标记奖励和重算检查奖励下的总奖励与组内优势',
   ]) {
     assert.ok(text.includes(figureText), `PDF is missing figure text: ${figureText}`);
+  }
+});
+
+function readChapterFile(filename) {
+  return readFileSync(join(bookDir, filename), 'utf8');
+}
+
+function assertChapterIncludes(filename, anchors, texts) {
+  const html = readChapterFile(filename);
+  for (const anchor of anchors) {
+    assert.ok(html.includes(`id="${anchor}"`), `${filename} is missing #${anchor}`);
+  }
+  for (const text of texts) {
+    assert.ok(html.includes(text), `${filename} is missing required text: ${text}`);
+  }
+}
+
+test('Transformer architecture chapter is complete', () => {
+  assertChapterIncludes('transformer-architecture.html', [
+    'sec-transformer-block',
+    'sec-layernorm',
+    'sec-ffn',
+    'sec-position',
+    'sec-decoder-only',
+    'fig-transformer-block',
+  ], ['Transformer', 'LayerNorm', 'FFN', '位置编码', '练习']);
+});
+
+test('Pretraining and scaling chapter is complete', () => {
+  assertChapterIncludes('pretraining-scaling.html', [
+    'sec-pretraining-objectives',
+    'sec-data-quality',
+    'sec-tokenization-pipeline',
+    'sec-scaling-laws',
+    'sec-moe',
+    'sec-cost',
+    'fig-pretraining-scaling',
+  ], ['Scaling Laws', 'Kaplan', 'Chinchilla', 'MoE', '练习']);
+});
+
+test('Inference systems chapter is complete', () => {
+  assertChapterIncludes('inference-systems.html', [
+    'sec-inference-pipeline',
+    'sec-gpu-memory',
+    'sec-kv-cache',
+    'sec-quantization',
+    'sec-distillation',
+    'sec-speculative-decoding',
+    'sec-batching',
+    'sec-inference-cost',
+    'sec-serving',
+    'fig-inference-systems',
+  ], ['KV cache', '量化', '投机解码', '连续批处理', '练习']);
+});
+
+test('RL foundations chapter is complete', () => {
+  assertChapterIncludes('rl-foundations.html', [
+    'sec-mdp',
+    'sec-return-value',
+    'sec-bellman',
+    'sec-monte-carlo',
+    'sec-td',
+    'sec-policy-gradient',
+    'sec-actor-critic',
+    'sec-ppo',
+    'fig-rl-foundations',
+  ], ['MDP', 'Bellman', '策略梯度', 'Actor-Critic', 'PPO', '练习']);
+});
+
+test('RL foundations keeps discount weights in policy-gradient updates', () => {
+  const html = readChapterFile('rl-foundations.html');
+  const policyStart = html.indexOf('id="sec-policy-gradient"');
+  const actorStart = html.indexOf('id="sec-actor-critic"');
+  const ppoStart = html.indexOf('id="sec-ppo"');
+  assert.ok(policyStart >= 0 && actorStart > policyStart && ppoStart > actorStart);
+  const policy = html.slice(policyStart, actorStart);
+  const actor = html.slice(actorStart, ppoStart);
+  assert.match(policy, /\\gamma\^t/);
+  assert.match(actor, /\\gamma\^t/);
+  assert.match(readChapterFile('frontier-rl.html'), /\\gamma\^t\s*A_t/);
+});
+
+test('RLHF alignment chapter is complete', () => {
+  assertChapterIncludes('rlhf-alignment.html', [
+    'sec-sft',
+    'sec-preference-data',
+    'sec-reward-model',
+    'sec-rlhf-objective',
+    'sec-ppo-kl',
+    'sec-dpo',
+    'sec-process-reward',
+    'sec-reward-hacking',
+    'sec-evaluation',
+    'sec-alignment-risk',
+    'fig-rlhf-objective',
+  ], ['RLHF', 'DPO', '奖励模型', 'Reward hacking', '练习']);
+});
+
+test('Frontier RL chapter is complete', () => {
+  assertChapterIncludes('frontier-rl.html', [
+    'sec-rlvr',
+    'sec-process-reward',
+    'sec-reward-hacking',
+    'sec-agentic-rl',
+    'sec-environment',
+    'sec-long-horizon',
+    'sec-agent-evaluation',
+    'sec-interpretability',
+    'sec-open-problems',
+    'fig-frontier-rl',
+  ], ['RLVR', 'Agentic RL', '可验证奖励', '开放问题', '练习']);
+});
+
+test('advanced chapters reference their existing static figures', () => {
+  for (const [filename, figure] of [
+    ['transformer-architecture.html', 'transformer-block.svg'],
+    ['pretraining-scaling.html', 'pretraining-scaling.svg'],
+    ['inference-systems.html', 'inference-systems.svg'],
+    ['rl-foundations.html', 'rl-foundations.svg'],
+    ['rlhf-alignment.html', 'rlhf-alignment.svg'],
+    ['frontier-rl.html', 'frontier-rl.svg'],
+  ]) {
+    assert.ok(
+      readChapterFile(filename).includes(`assets/figures/${figure}`),
+      `${filename} does not reference ${figure}`,
+    );
+    assert.ok(
+      existsSync(join(projectRoot, 'assets/figures', figure)),
+      `Static figure is missing: ${figure}`,
+    );
+  }
+});
+
+test('HTML navigation stays relative and each page has bounded payload', () => {
+  for (const filename of [
+    'index.html',
+    'softmax-cross-entropy.html',
+    'embedding-geometry.html',
+    'optimization.html',
+    'attention.html',
+    'transformer-architecture.html',
+    'pretraining-scaling.html',
+    'inference-systems.html',
+    'rl-foundations.html',
+    'rlhf-alignment.html',
+    'frontier-rl.html',
+  ]) {
+    const path = join(bookDir, filename);
+    assert.ok(existsSync(path), `${path} does not exist`);
+    assert.ok(
+      statSync(path).size < 32 * 1024 ** 2,
+      `${filename} exceeds the 32 MiB per-page payload budget`,
+    );
+    assert.doesNotMatch(
+      readFileSync(path, 'utf8'),
+      /data:text\/html/,
+      `${filename} embeds a complete chapter in a navigation link`,
+    );
+  }
+});
+
+test('Typst PDF includes every new chapter title', () => {
+  const text = execFileSync('pdftotext', ['-layout', join(bookDir, 'llm-book.pdf'), '-'], {
+    encoding: 'utf8',
+    maxBuffer: 10 * 1024 * 1024,
+  });
+  for (const title of [
+    '章节 6. Transformer 架构与预训练',
+    '章节 7. 预训练与 Scaling Laws',
+    '章节 8. 推理与系统工程',
+    '章节 9. 强化学习基础：从 MDP 到 PPO',
+    '章节 10. 后训练、偏好优化与 RLHF',
+    '章节 11. 前沿 RL、Agentic RL 与开放问题',
+  ]) {
+    assert.ok(text.includes(title), `PDF is missing chapter title: ${title}`);
+  }
+  assert.doesNotMatch(text, /Chapter\s+[6-9]|Chapter\s+10|Chapter\s+11/);
+});
+
+test('Typst PDF keeps advanced exercises and cited source names', () => {
+  const text = execFileSync('pdftotext', ['-layout', pdfPath, '-'], {
+    encoding: 'utf8',
+    maxBuffer: 10 * 1024 * 1024,
+  });
+  for (const marker of [
+    /6\.11\s+练习/,
+    /7\.13\s+练习/,
+    /8\.14\s+练习/,
+    /9\.13\s+练习/,
+    /10\.15\s+练习/,
+    /11\.13\s+练习/,
+  ]) {
+    assert.match(text, marker);
+  }
+  const compactText = text.replace(/\s+/g, '');
+  for (const source of [
+    'Kaplan 等（2020）',
+    'Chinchilla',
+    'Muennighoff 等（2023）',
+    'Shazeer 等（2017）',
+    'Fedus 等（2021）',
+    'Ouyang 等（2022）',
+    'Christiano 等（2017）',
+    'Schulman 等（2017）',
+    'Rafailov 等（2023）',
+    'GRPO',
+    'HumanEval',
+    'ReAct',
+  ]) {
+    assert.ok(
+      compactText.includes(source.replace(/\s+/g, '')),
+      `PDF is missing cited source: ${source}`,
+    );
   }
 });

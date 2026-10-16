@@ -32,6 +32,18 @@ mjx-container[display='true'] {
   overflow-y: hidden;
 }
 
+.math.inline,
+.math.display {
+  overflow-wrap: anywhere;
+}
+
+.math.display {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 llm-cross-entropy,
 llm-decoding-explorer {
   display: block;

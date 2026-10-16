@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Pre-LN Transformer Block：归一化、FFN 与残差数据流</title>
+  <desc id="desc">输入 x=(1,−2,4) 先经 LayerNorm 得到 (0,−1.2247,1.2247)，再经教学 FFN 得到 (0,0,1.2247)，最后与原始输入做残差加法，输出 (1,−2,5.2247)。底部同时列出 Post-LN 规则和 FFN 定义。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4C5F6A"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="720" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="44" text-anchor="middle" font-size="30" font-weight="700">Pre-LN Transformer Block 数值图</text>
+    <text x="600" y="80" text-anchor="middle" font-size="19" fill="#4C5F6A">先归一化子层输入，再执行 FFN，最后与原输入做残差加法</text>
+
+    <g stroke-width="2">
+      <rect x="45" y="130" width="160" height="130" rx="14" fill="#F3F4F5" stroke="#5E6A70"/>
+      <rect x="275" y="130" width="180" height="130" rx="14" fill="#DCECF4" stroke="#1F648C"/>
+      <rect x="525" y="130" width="205" height="130" rx="14" fill="#FBF8F3" stroke="#B55224"/>
+      <rect x="800" y="130" width="120" height="130" rx="14" fill="#E4F0E7" stroke="#39704A"/>
+      <rect x="990" y="130" width="165" height="130" rx="14" fill="#F3F4F5" stroke="#5E6A70"/>
+    </g>
+    <g text-anchor="middle">
+      <text x="125" y="172" font-size="23" font-weight="700">输入 x</text>
+      <text x="125" y="218" font-size="18">(1, −2, 4)</text>
+      <text x="365" y="172" font-size="23" font-weight="700" fill="#1F648C">LayerNorm</text>
+      <text x="365" y="205" font-size="16">μ = 1，σ² = 6</text>
+      <text x="365" y="235" font-size="16">(0, −1.2247, 1.2247)</text>
+      <text x="627" y="172" font-size="23" font-weight="700" fill="#8C421F">FFN</text>
+      <text x="627" y="205" font-size="16">逐位置、共享参数</text>
+      <text x="627" y="235" font-size="16">(0, 0, 1.2247)</text>
+      <text x="860" y="172" font-size="28" font-weight="700" fill="#39704A">＋</text>
+      <text x="860" y="207" font-size="16">残差汇合</text>
+      <text x="860" y="235" font-size="15">x ＋ F(LN(x))</text>
+      <text x="1072" y="172" font-size="23" font-weight="700">输出 y</text>
+      <text x="1072" y="218" font-size="17">(1, −2, 5.2247)</text>
+    </g>
+    <g fill="none" stroke="#4C5F6A" stroke-width="3" marker-end="url(#arrow)">
+      <path d="M 205 195 H 265"/>
+      <path d="M 455 195 H 515"/>
+      <path d="M 730 195 H 790"/>
+      <path d="M 920 195 H 980"/>
+    </g>
+    <path d="M 125 260 V 335 H 860 V 270" fill="none" stroke="#8C421F" stroke-width="3" stroke-dasharray="9 6" marker-end="url(#arrow)"/>
+    <text x="490" y="321" text-anchor="middle" font-size="18" fill="#8C421F">残差捷径：不经过 LN 与 FFN，直接携带 x</text>
+
+    <rect x="45" y="400" width="530" height="245" rx="14" fill="#F8FAFB" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="75" y="442" font-size="22" font-weight="700">两种归一化次序（均启用残差）</text>
+    <text x="75" y="490" font-size="21" fill="#1F648C">Pre-LN：y = x ＋ F(LN(x))</text>
+    <text x="75" y="535" font-size="21" fill="#8C421F">Post-LN：y = LN(x ＋ F(x))</text>
+    <text x="75" y="580" font-size="17" fill="#4C5F6A">关闭残差时去掉 x 加项；Post-LN 仍保留出口 LN</text>
+    <text x="75" y="618" font-size="17" fill="#4C5F6A">两种次序一般不等价，不能只移动图块而不改公式</text>
+
+    <rect x="625" y="400" width="530" height="245" rx="14" fill="#FBF8F3" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="655" y="442" font-size="22" font-weight="700">本例的 FFN 与归一化约定</text>
+    <text x="655" y="490" font-size="20">F(z) = (z₁, ReLU(z₂), ReLU(z₃))</text>
+    <text x="655" y="532" font-size="18">d = 3，d_ff = 4，零偏置，ε = 0</text>
+    <text x="655" y="574" font-size="18">LN(x) = (0, −3/√6, 3/√6)</text>
+    <text x="655" y="616" font-size="18">y = (1, −2, 4 ＋ 3/√6)</text>
+
+    <text x="600" y="686" text-anchor="middle" font-size="17" fill="#4C5F6A">显示值四舍五入；三维输入与四维隐藏层仅用于手算，不是推荐超参数</text>
+  </g>
+</svg>

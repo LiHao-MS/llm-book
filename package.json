@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "quarto render",
+    "build": "quarto render && node scripts/strip-embedded-navigation.mjs",
     "test": "npm run test:js && npm run test:python",
     "test:js": "node --test tests/unit/*.test.mjs",
     "test:python": "python3 -m unittest discover -s tests -p 'test_*.py'",

@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1030" role="img" aria-labelledby="title desc">
+  <title id="title">推理系统的显存层次、KV cache、连续批处理与成本</title>
+  <desc id="desc">四面板教学图。第一面板从 SM 计算单元依次连接片上寄存器与 Shared Memory、HBM 和主机 DRAM，说明容量与访问代价的相对层次。第二面板用 L=2、KV 头数=2、头维=64、序列长=512、batch=4、每元素 2 字节计算 KV cache，总计 2 MiB、每序列 0.5 MiB，并用条形展示序列长或 batch 翻倍后总量翻倍。第三面板给出连续批处理的一种五步时间线：请求 A 在第 0 步 prefill、随后 decode 并在第 3 步后结束，请求 B 在第 1 步加入，请求 C 在第 3 步加入。第四面板用 1 张 GPU、每 GPU 小时 8 成本单位、峰值得 40 输出 Token 每秒、利用率 50% 和每请求 250 输出 Token，得到有效吞吐 20 Token 每秒、每百万输出 Token 成本 111.111111、每请求成本 0.027778、每小时 288 请求。所有数字均为教学算例而非硬件或市场报价。</desc>
+  <defs>
+    <marker id="inference-arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1F648C"/>
+    </marker>
+    <marker id="inference-arrow-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5E6A70"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="1030" fill="#FFFFFF"/>
+  <g font-family="Noto Serif CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif" fill="#172B3A">
+    <text x="600" y="45" text-anchor="middle" font-size="30" font-weight="700">推理系统：显存、KV cache、连续批处理与成本</text>
+
+    <rect x="40" y="80" width="540" height="420" rx="14" fill="#F8FAFB" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="310" y="118" text-anchor="middle" font-size="22" font-weight="700">A. 计算与显存层次</text>
+    <text x="310" y="146" text-anchor="middle" font-size="16" fill="#4C5F6A">相对关系示意，具体容量和带宽以硬件为准</text>
+    <rect x="120" y="165" width="380" height="50" rx="8" fill="#DDE9EF" stroke="#1F648C" stroke-width="2"/>
+    <text x="310" y="197" text-anchor="middle" font-size="19" font-weight="700">SM 计算单元</text>
+    <line x1="310" y1="215" x2="310" y2="237" stroke="#1F648C" stroke-width="2" marker-end="url(#inference-arrow-blue)"/>
+    <rect x="120" y="240" width="380" height="55" rx="8" fill="#E7F0EA" stroke="#39704A" stroke-width="2"/>
+    <text x="310" y="264" text-anchor="middle" font-size="18" font-weight="700">寄存器 / Shared Memory</text>
+    <text x="310" y="286" text-anchor="middle" font-size="15" fill="#4C5F6A">片上、容量有限</text>
+    <line x1="310" y1="295" x2="310" y2="322" stroke="#5E6A70" stroke-width="2" marker-end="url(#inference-arrow-gray)"/>
+    <rect x="120" y="325" width="380" height="60" rx="8" fill="#F5E8DF" stroke="#8C421F" stroke-width="2"/>
+    <text x="310" y="350" text-anchor="middle" font-size="18" font-weight="700">HBM（设备显存）</text>
+    <text x="310" y="375" text-anchor="middle" font-size="15" fill="#4C5F6A">权重、KV cache、激活与工作区</text>
+    <line x1="310" y1="385" x2="310" y2="412" stroke="#5E6A70" stroke-width="2" marker-end="url(#inference-arrow-gray)"/>
+    <rect x="120" y="415" width="380" height="50" rx="8" fill="#EEE9F3" stroke="#71558A" stroke-width="2"/>
+    <text x="310" y="446" text-anchor="middle" font-size="18" font-weight="700">主机 DRAM（可选 offload）</text>
+    <text x="310" y="486" text-anchor="middle" font-size="15" fill="#4C5F6A">向下通常容量更大，但访问路径更长</text>
+
+    <rect x="620" y="80" width="540" height="420" rx="14" fill="#FBF8F3" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="890" y="118" text-anchor="middle" font-size="22" font-weight="700">B. KV cache 的线性增长</text>
+    <text x="890" y="146" text-anchor="middle" font-size="16" fill="#4C5F6A">玩具 Transformer；不含分配器碎片与元数据</text>
+    <text x="890" y="190" text-anchor="middle" font-size="19" font-weight="700">M_KV = 2 × B × L × S × H_kv × d_h × b</text>
+    <text x="660" y="226" font-size="17">L = 2，H_kv = 2，d_h = 64，b = 2 字节</text>
+    <text x="660" y="253" font-size="17">B = 4，S = 512；每序列 0.5 MiB</text>
+    <rect x="660" y="276" width="460" height="55" rx="8" fill="#DDE9EF" stroke="#1F648C" stroke-width="2"/>
+    <text x="890" y="311" text-anchor="middle" font-size="21" font-weight="700">M_KV = 2,097,152 字节 = 2 MiB</text>
+    <g font-size="15">
+      <text x="650" y="367">S=512，B=4</text>
+      <rect x="845" y="348" width="120" height="24" rx="3" fill="#1F648C"/>
+      <text x="978" y="367">2 MiB</text>
+      <text x="650" y="411">S=1024，B=4</text>
+      <rect x="845" y="392" width="240" height="24" rx="3" fill="#39704A"/>
+      <text x="1097" y="411">4 MiB</text>
+      <text x="650" y="455">S=512，B=8</text>
+      <rect x="845" y="436" width="240" height="24" rx="3" fill="#8C421F"/>
+      <text x="1097" y="455">4 MiB</text>
+    </g>
+    <text x="890" y="486" text-anchor="middle" font-size="15" fill="#4C5F6A">条形共用 60 SVG 单位 / MiB 的同一标尺</text>
+
+    <rect x="40" y="535" width="540" height="455" rx="14" fill="#FBF8F3" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="310" y="573" text-anchor="middle" font-size="22" font-weight="700">C. 连续批处理时间线</text>
+    <text x="310" y="601" text-anchor="middle" font-size="16" fill="#4C5F6A">一种调度示例：P = prefill，D = decode</text>
+    <g font-size="15" text-anchor="middle" fill="#4C5F6A">
+      <text x="205" y="638">步骤 0</text>
+      <text x="280" y="638">步骤 1</text>
+      <text x="355" y="638">步骤 2</text>
+      <text x="430" y="638">步骤 3</text>
+      <text x="505" y="638">步骤 4</text>
+    </g>
+    <g font-size="18" font-weight="700">
+      <text x="82" y="684">请求 A</text>
+      <text x="82" y="749">请求 B</text>
+      <text x="82" y="814">请求 C</text>
+    </g>
+    <g stroke="#8A9AA5" stroke-width="1.5" font-size="18" text-anchor="middle">
+      <rect x="170" y="650" width="70" height="50" rx="4" fill="#F5E8DF"/>
+      <text x="205" y="682" fill="#8C421F">P</text>
+      <rect x="245" y="650" width="70" height="50" rx="4" fill="#DDE9EF"/>
+      <text x="280" y="682" fill="#1F648C">D</text>
+      <rect x="320" y="650" width="70" height="50" rx="4" fill="#DDE9EF"/>
+      <text x="355" y="682" fill="#1F648C">D</text>
+      <rect x="395" y="650" width="70" height="50" rx="4" fill="#DDE9EF"/>
+      <text x="430" y="682" fill="#1F648C">D</text>
+      <rect x="470" y="650" width="70" height="50" rx="4" fill="#FFFFFF"/>
+      <text x="505" y="682" fill="#5E6A70">—</text>
+
+      <rect x="170" y="715" width="70" height="50" rx="4" fill="#FFFFFF"/>
+      <text x="205" y="747" fill="#5E6A70">—</text>
+      <rect x="245" y="715" width="70" height="50" rx="4" fill="#F5E8DF"/>
+      <text x="280" y="747" fill="#8C421F">P</text>
+      <rect x="320" y="715" width="70" height="50" rx="4" fill="#DDE9EF"/>
+      <text x="355" y="747" fill="#1F648C">D</text>
+      <rect x="395" y="715" width="70" height="50" rx="4" fill="#DDE9EF"/>
+      <text x="430" y="747" fill="#1F648C">D</text>
+      <rect x="470" y="715" width="70" height="50" rx="4" fill="#DDE9EF"/>
+      <text x="505" y="747" fill="#1F648C">D</text>
+
+      <rect x="170" y="780" width="70" height="50" rx="4" fill="#FFFFFF"/>
+      <text x="205" y="812" fill="#5E6A70">—</text>
+      <rect x="245" y="780" width="70" height="50" rx="4" fill="#FFFFFF"/>
+      <text x="280" y="812" fill="#5E6A70">—</text>
+      <rect x="320" y="780" width="70" height="50" rx="4" fill="#FFFFFF"/>
+      <text x="355" y="812" fill="#5E6A70">—</text>
+      <rect x="395" y="780" width="70" height="50" rx="4" fill="#F5E8DF"/>
+      <text x="430" y="812" fill="#8C421F">P</text>
+      <rect x="470" y="780" width="70" height="50" rx="4" fill="#DDE9EF"/>
+      <text x="505" y="812" fill="#1F648C">D</text>
+    </g>
+    <text x="70" y="870" font-size="15">B 在第 1 步加入；A 在第 3 步后释放槽位。</text>
+    <text x="70" y="897" font-size="15">C 在第 3 步加入；是否混合 P/D 由调度器决定。</text>
+    <rect x="70" y="920" width="480" height="48" rx="7" fill="#E7F0EA" stroke="#39704A" stroke-width="1.5"/>
+    <text x="310" y="951" text-anchor="middle" font-size="18" font-weight="700">变长请求：M_KV ∝ Σ_i S_i，而非只看请求数</text>
+
+    <rect x="620" y="535" width="540" height="455" rx="14" fill="#F8FAFB" stroke="#8A9AA5" stroke-width="2"/>
+    <text x="890" y="573" text-anchor="middle" font-size="22" font-weight="700">D. 服务成本换算</text>
+    <text x="890" y="601" text-anchor="middle" font-size="16" fill="#4C5F6A">“成本单位”仅用于教学，不是市场报价</text>
+    <text x="660" y="648" font-size="17">GPU 数 N = 1；价格 c = 8 /(GPU·h)</text>
+    <text x="660" y="680" font-size="17">整服务实测吞吐 T = 40 输出 Token/s</text>
+    <text x="660" y="712" font-size="17">有效利用率 u = 50%；Y = 250 Token/请求</text>
+    <rect x="660" y="738" width="460" height="55" rx="8" fill="#DDE9EF" stroke="#1F648C" stroke-width="2"/>
+    <text x="890" y="773" text-anchor="middle" font-size="20" font-weight="700">T_eff = uT = 20 输出 Token/s</text>
+    <text x="890" y="828" text-anchor="middle" font-size="19">C_1M = Nc × 10⁶ /(3600 T_eff)</text>
+    <text x="890" y="862" text-anchor="middle" font-size="21" font-weight="700">= 111.111111 成本单位</text>
+    <line x1="680" y1="885" x2="1100" y2="885" stroke="#8A9AA5" stroke-width="1.5"/>
+    <text x="890" y="920" text-anchor="middle" font-size="18">每请求：C_1M × Y/10⁶ = 0.027778</text>
+    <text x="890" y="950" text-anchor="middle" font-size="18">服务请求率：3600 × 20/250 = 288 请求/h</text>
+    <text x="890" y="980" text-anchor="middle" font-size="14" fill="#4C5F6A">T 须来自代表性负载；若已是实际吞吐，勿再乘 u</text>
+  </g>
+</svg>

@@ -18,6 +18,12 @@ book:
     - embedding-geometry.qmd
     - optimization.qmd
     - attention.qmd
+    - transformer-architecture.qmd
+    - pretraining-scaling.qmd
+    - inference-systems.qmd
+    - rl-foundations.qmd
+    - rlhf-alignment.qmd
+    - frontier-rl.qmd
 
 lang: zh-CN
 bibliography: references.bib
